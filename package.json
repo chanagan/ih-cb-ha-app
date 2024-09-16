@@ -1,0 +1,21 @@
+{
+  "name": "ih-cb-ih-app",
+  "version": "1.0.0",
+  "description": "IH app for CB - House Accounts",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "dev": "nodemon --exec electron .",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "electron": "^31.2.1",
+    "nodemon": "^3.1.4"
+  },
+  "dependencies": {
+    "electron-fetch": "^1.9.1",
+  }
+}

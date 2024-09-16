@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="./css/mystyle.css" />
+
+    <title>IH App - Resort Guests</title>
+    <script></script>
+  </head>
+  <body>
+    <div class="wrapperTop">
+      <div class="icon">
+        <img src="images/IH-logo.png" alt="IH Logo" width="300" height="100" />
+      </div>
+      <div class="caveat">
+       <span class="data-caveat"> ** All data as of 7/8/2024 ** </span>
+      </div>
+      <!-- <input type="button" value="House Accounts" 
+        onclick="window.location.href='house_acct.html'"> -->
+
+
+    </div>
+    <div class="box" id="gstNameDiv">
+      Selected Guest Name: <span id="gstName" class="gstDisp"></span>
+    </div>
+    <div class="box search">
+      <table class="search" border="0">
+        <tr>
+          <td width="40%">
+            <label for="gstSearch">Search for Guest Name:</label>
+            <br />
+            <input type="text" id="gstSearch" placeholder="Search Guest Name .." />
+            <button type="button" id="btnGstSearch">Search</button>
+          </td>
+          <td width="30%">
+            <span id="cntRes"></span>
+          </td>
+          <td>
+            <button type="button" id='btnSwitch2HA' >Switch to House Accounts </button>
+          </td>
+        </tr> 
+      </table>
+    </div>
+    <div class=" header">
+      <div id="gstTblDiv" class="scrollable"></div>
+    </div>
+
+
+    <!-- this the block for profile data -->
+      <div class="wrapperProfile" id="gstProfile">
+        <div class="box leftSide">
+          <div id="gstDtlDivLft" class="gstDisp"></div>
+        </div>
+        <div class="box rightSide" >
+          <div id="gstDtlDivRgt" class="gstDisp"></div>
+        </div>
+      </div>
+
+      <!-- this the block for reservation data -->
+      <div class="wrapperReservation" id="gstReservation">
+        <div class="box gstResvDetail">
+          <div id="gstResDivLft" class=" gstDisp"></div>
+        </div>
+        <div class="box gstResvRates">
+          <div id="gstResDivRgt" class="gstDisp"></div>
+        </div>
+      </div>
+
+      <!-- this the block for stay history data -->
+      <div class="wrapperReservation" id="gstStayHistory">
+        <div class="box gstStayDetail">
+          <div id="gstStayDivLft" class="scrollable gstDisp"></div>
+        </div>
+        <div class="box gstStayRates">
+          <div id="gstStayDivRgt" class="scrollable gstDisp"></div>
+        </div>
+      </div>
+
+<!-- 
+      <div class="box footer">
+        <div id="gstDtlDivNotes" class="scrollable"></div>
+      </div> -->
+
+<script type="module" src="./renderer.js"></script>
+  </body>
+</html>

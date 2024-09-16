@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <link rel="stylesheet" href="./css/mystyle.css" />
+        <link rel="stylesheet" href="./css/blockWrappers.css" />
+
+        <!-- <script src="node_modules/xel/xel.js" type="module"></script>
+        <meta name="xel-theme" content="node_modules/xel/themes/cupertino.css">
+        <meta name="xel-icons" content="node_modules/xel/icons/fluent.svg"> -->
+
+        <title>IH / CB App - Hotel VIP Guests</title>
+        <script></script>
+    </head>
+    <body>
+        <div class="wrapperTop">
+            <div class="iconIH">
+                <img
+                    src="images/IH-logo.png"
+                    alt="IH Logo"
+                    width="300"
+                    height="100"
+                />
+            </div>
+            <div class="iconCB">
+                <img
+                    src="images/cloudbeds_nebula_logo.png"
+                    alt="CB Logo"
+                    width="240"
+                    height="40"
+                />
+            </div>
+        </div>
+
+        <div class="wrapperHead">
+            <div class="hdrSearch">
+                <label>Check-in Date Range: </label>
+                <br />
+                <input
+                    type="date"
+                    id="resDateFrom"
+                />
+                <input
+                    type="date"
+                    id="resDateTo"
+                />
+                <button type="button" id="btnDateSearch">Search</button>
+            </div>
+            <div class="hdrCount">
+                <span id="cntRes"></span>
+            </div>
+            <div class="hdrStatus" id="hdrStatusChecks">
+                <!-- <input type="checkbox" id="checked_in"
+                    class="checked_in" checked />
+                <label for="checked_in" class="checked_in">Checked In</label>
+
+                <input type="checkbox" id="checked_out" 
+                    class="checked_out" checked/>
+                <label for="checked_out" class="checked_out">Checked Out</label>
+
+                <input type="checkbox" id="confirmed" 
+                    class="confirmed" checked/>
+                <label for="confirmed" class="confirmed">Confirmed</label>
+
+                <input type="checkbox" id="canceled" 
+                    class="canceled" checked/>
+                <label for="canceled" class="canceled">Canceled</label>
+
+                <input type="checkbox" id="vip" 
+                    class="vip" checked/>
+                <label for="vip" class="vip">VIP</label> -->
+            </div>
+
+            <!-- <input type="text" id="gstSearch" placeholder="Search Name .." />
+      <button type="button" id="btnGstSearch">Search</button> -->
+            <!-- <span id="cntRes"></span> -->
+        </div>
+        <div class="box" id="gstNameDiv">
+            <span id="dispSelName" class="gstDisp"></span>
+        </div>
+
+        <div class="header">
+            <div class="box wrapperList">
+                <div id="resListDiv" class="list scrollable"></div>
+                <div id="resDtlDiv" class="expand scrollable"></div>
+            </div>
+        </div>
+
+        <!-- this the block for profile data -->
+
+        <div class="wrapperProfile" id="haProfile">
+            <div class="box leftSide">
+                <div id="gstDtlDivLft" class="gstDisp"></div>
+            </div>
+            <div class="box rightSide">
+                <div id="gstDtlDivRgt" class="gstDisp"></div>
+            </div>
+        </div>
+
+        <!-- this the block for reservation data -->
+
+        <div class="wrapperReservation" id="gstReservation">
+            <div class="box gstResvDetail">
+                <div id="gstResDivLft" class="gstDisp"></div>
+            </div>
+            <div class="box gstResvRates">
+                <div id="gstResDivRgt" class="gstDisp"></div>
+            </div>
+        </div>
+
+        <div class="box footer">
+            <div id="haDtlDivNotes" class="scrollable"></div>
+        </div>
+
+        <script type="module" src="./renderer.js"></script>
+    </body>
+</html>

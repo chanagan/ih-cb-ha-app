@@ -1,0 +1,19 @@
+{
+    "ignore":[
+        "node_modules",
+        "bower_components",
+        "dist",
+        "build",
+        "coverage",
+        "test",
+        "tests",
+        "doc",
+        "docs",
+        "example",
+        "examples",
+        "tmp",
+        "temp"  
+    ],
+    "ext": "js, json, md, html, css, scss, sass, less, ts, jsx, tsx"
+
+}
