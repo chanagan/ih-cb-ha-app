@@ -63,16 +63,37 @@ export const formatter = new Intl.NumberFormat("en-US", {
     currency: "USD",
 });
 
-let statusFlags = { vip: true };
-statusFlags["checked_in"] = true;
-statusFlags["checked_out"] = true;
-// statusFlags["canceled"] = true;
-statusFlags["confirmed"] = true;
-
-export function statusFlag(status) {
-    return statusFlags[status];
+export function clearInfoBlocks() {
+    let dispElems = document.getElementsByClassName("gstDisp");
+    for (let i = 0; i < dispElems.length; i++) {
+        dispElems[i].innerHTML = "";
+    }
 }
 
-export function updateStatusFlag(status, flag) {
-    statusFlags[status] = flag;
+export function clearHighlight() {
+    let dispElems = document.getElementsByClassName("table-active");
+    for (let i = 0; i < dispElems.length; i++) {
+        dispElems[i].classList.remove("table-active");
+    }
+}
+
+export function clearSelections() {
+    clearHighlight();
+    clearInfoBlocks();
+}
+
+export function showVipList() {
+    console.log("showVipList");
+    document.getElementById("navHA").classList.remove("active");
+    document.getElementById("navVIP").classList.add("active");
+    document.getElementById("vipList").style.display = "block";
+    document.getElementById("haList").style.display = "none";
+}
+
+export function showHaList() {
+    console.log("showHaList");
+    document.getElementById("navVIP").classList.remove("active");
+    document.getElementById("navHA").classList.add("active");
+    document.getElementById("vipList").style.display = "none";
+    document.getElementById("haList").style.display = "block";
 }

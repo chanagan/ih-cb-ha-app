@@ -52,6 +52,7 @@ app.whenReady().then(() => {
     createWindow();
     window.once("ready-to-show", () => {
         window.show();
+        getHA_List();
         // getResList();
     });
 });
@@ -65,8 +66,8 @@ app.whenReady().then(() => {
 const cbPropertyID = "310046";
 const cbServer = "https://hotels.cloudbeds.com/api/v1.2/";
 // const cbApiCall = 'getGuestList'
-// const cbApiCall = "getHouseAccountDetails?";
-const cbApiHouseAccountList = "getHouseAccountList?";
+const cbApiHA_Details = "getHouseAccountDetails?";
+const cbApiHA_List = "getHouseAccountList?";
 const cbApiGetReservations = "getReservations?";
 // const cbApiCall = 'getDashboard'
 
@@ -76,6 +77,29 @@ const cbOptions = {
         "x-api-key": "cbat_AVYJ4dezriaScXdXY9WJrVyjHl5PxxY5",
     },
 };
+
+const getHA_List = () => {
+    let params = new URLSearchParams({
+        propertyID: cbPropertyID,
+        accountStatus: "open",
+        // checkInFrom: "2024-08-23",
+        // checkInTo: "2024-08-31",
+        // pageNumber: 1,
+    });
+    fetch(cbServer + cbApiHA_List + params, cbOptions)
+        .then(res => res.json())
+        .then((data) => {
+            // console.log("main: getHA_List: ", data);
+            console.log("main: getHA_List: ");
+            let haData = data.data;
+            window.webContents.send("HA_Data", haData); // send to preload
+        });
+    
+}
+// user asked for a reload of the HA data
+ipcMain.on("haLoad", async () => {
+    getHA_List();
+})
 
 // function getResList() {
 ipcMain.on("resList", async (event, data) => {
@@ -92,7 +116,7 @@ ipcMain.on("resList", async (event, data) => {
     fetch(cbServer + 'getReservations?' + params, cbOptions)
         .then(res => res.json())
         .then((data) => {
-            console.log("main: getResList: ", data);
+            // console.log("main: getResList: ", data);
             resData = data.data;
             window.webContents.send("resData", resData); // send to preload
         });
@@ -102,7 +126,7 @@ ipcMain.on("resList", async (event, data) => {
 );
 
 ipcMain.on('getResDetail', async (event, resID) => {
-    console.log('main: getResDetail: resID: ', resID)
+    // console.log('main: getResDetail: resID: ', resID)
     let params = new URLSearchParams({
         propertyID: cbPropertyID,
         reservationID: resID,
@@ -110,7 +134,7 @@ ipcMain.on('getResDetail', async (event, resID) => {
     fetch(cbServer + 'getReservation?' + params, cbOptions)
         .then(res => res.json())
         .then((data) => {
-            console.log("main: getResDetail: data: ", data);
+            // console.log("main: getResDetail: data: ", data);
             resData = data.data;
             window.webContents.send("gotResDetail", data);
         });

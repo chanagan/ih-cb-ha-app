@@ -1,0 +1,10 @@
+.scrollable {
+    height: 25em;
+    overflow: auto;
+}
+thead {
+    background-color: #00a7ce;
+    color: white;
+    position: sticky;
+    top: 0;
+}

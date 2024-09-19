@@ -3,7 +3,7 @@ const { contextBridge, ipcRenderer } = require('electron')
 
 const API = {
     send: (channel, data) => {
-        console.log(channel, data)
+        console.log('api.send: ' + channel, data)
         ipcRenderer.send(channel, data)
     },
     receive: (channel, func) => {
@@ -15,6 +15,14 @@ const API = {
 }
 
 contextBridge.exposeInMainWorld('api', API)                                                                                                                                                
+
+ipcRenderer.on('HA_Data', (event, data) => {
+    let ha_cnt = data.length
+    // console.log(`preload-HA_Data: leng: ${ha_cnt} - `, data )
+    window.postMessage({type: 'HA_Data', data: data}) // send to renderer
+})
+
+
 
 ipcRenderer.on('resData', (event, data) => {
     // console.log('preload-resData: ', data )
