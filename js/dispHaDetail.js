@@ -3,15 +3,15 @@ import { dater, formatter } from "./utility.js";
 
 let tblTotalHdrs = {};
 tblTotalHdrs['count'] = 'Count';
-tblTotalHdrs['credit'] = 'Credit';
-tblTotalHdrs['debit'] = 'Debit';
+tblTotalHdrs['credit'] = 'Charges';
+tblTotalHdrs['debit'] = 'Payments';
 tblTotalHdrs['quantity'] = 'Quantity';
 
 let tblRecordHdrs = {};
 // tblRecordHdrs["currency"] = "Currency";
 tblRecordHdrs["transactionDateTime"] = "Trans Date";
-tblRecordHdrs["credit"] = "Credit";
-tblRecordHdrs["debit"] = "Debit";
+tblRecordHdrs["credit"] = "Charge";
+tblRecordHdrs["debit"] = "Payment";
 tblRecordHdrs["balance"] = "Balance";
 // tblRecordHdrs["description"] = "Description";
 // tblRecordHdrs["notes"] = "Notes";
@@ -93,10 +93,9 @@ export function dispHaDetail(data) {
     haDtlDivTotal.innerHTML = newTable;
 
 
-    newTable = "<table border='0' id='haRecordsTbl' class='table table-sm'>";
-
+    newTable = "<table border='0' id='haRecordsTbl' class='table table-sm table-hover table-fixed'>";
+    newTable += "<thead>";
     // headers for the 'records' table
-    // newTable += "<thead>";
     newRow = "<tr>";
     for (let key1 in tblRecordHdrs) {
         newRow += "<th>" + tblRecordHdrs[key1] + "</th>";
@@ -104,7 +103,7 @@ export function dispHaDetail(data) {
     // newRow += "<td class='glyphicon >&#xe086;</td>"
     newRow += "</tr>";
     newTable += newRow;
-    // newTable += "</thead>";
+    newTable += "</thead>";
     
 
     /**
@@ -131,6 +130,10 @@ export function dispHaDetail(data) {
                 case 'balance':
                     tdAlign = 'right';
                     newCol = formatter.format(thisRecord[fldKey]);
+                    break
+                case 'transactionDateTime':
+                    tdAlign = 'left';
+                    newCol = thisRecord[fldKey];
                     break
                 case 'description':
                     newCol = "<img src='images/info-circle-fill.svg' title='" + thisRecord[fldKey] + "'>"
