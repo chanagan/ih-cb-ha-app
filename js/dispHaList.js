@@ -103,7 +103,7 @@ export function dispHaList(data) {
     // close the table
     newTable += "</table>";
     haListDiv.innerHTML = newTable;
-    // let cntHA = document.getElementById("cntHA");
+    
     cntHA.innerHTML = "Number of House Accounts: <b>" + displayCnt + "</b>";
 
     return displayCnt;

@@ -94,7 +94,7 @@ const getHA_List = () => {
             let haData = data.data;
             window.webContents.send("HA_Data", haData); // send to preload
         });
-    
+
 }
 // user asked for a reload of the HA data
 ipcMain.on("haLoad", async () => {
@@ -125,7 +125,7 @@ ipcMain.on("resList", async (event, data) => {
     // window.webContents.send("resData", resData); // send to preload
 );
 
-ipcMain.on('getResDetail', async (event, resID) => {
+ipcMain.on('getResDetail',  (event, resID) => {
     // console.log('main: getResDetail: resID: ', resID)
     let params = new URLSearchParams({
         propertyID: cbPropertyID,
@@ -138,4 +138,25 @@ ipcMain.on('getResDetail', async (event, resID) => {
             resData = data.data;
             window.webContents.send("gotResDetail", data);
         });
+})
+
+// cbApiHA_Details
+
+ipcMain.on('getHaDetail',  (event, keyID) => {
+    console.log('ipcMain main: getHAdtl: ', keyID)
+    let params = new URLSearchParams({
+        propertyID: cbPropertyID,
+        houseAccountID: keyID,
+        resultsFrom: '2024-07-08',
+        resultsTo: '2024-12-31',
+    })
+    fetch(cbServer + cbApiHA_Details + params, cbOptions)
+        .then(res => res.json())
+        .then((data) => {
+            console.log("main: getHaDetail: data: ", data);
+            resData = data.data;
+            // return resData
+            window.webContents.send("gotHaDetail", resData);
+        });
+
 })

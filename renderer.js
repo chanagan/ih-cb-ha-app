@@ -1,13 +1,17 @@
 // import { api } from "./preload.js";
+
 import { dispResList } from "./js/dispResList.js";
 import { dispResDetail } from "./js/dispResDetail.js";
 import { dispHaList } from "./js/dispHaList.js";
+import { dispHaDetail } from "./js/dispHaDetail.js";
 
 import { showHaList, showVipList, clearInfoBlocks, clearHighlight, clearSelections }
   from "./js/utility.js";
 // import { ipcRenderer } from "electron";
 
+// load up the HA data early
 showHaList();
+
 navHA.addEventListener("click", showHaList);
 navVIP.addEventListener("click", showVipList);
 btnHaNmSearch.addEventListener("click", () => {
@@ -19,9 +23,12 @@ chkStatOpn.addEventListener("click", () => {
 chkStatClsd.addEventListener("click", () => {
   dispHaList(ha_accts);
 })
-
+btnHaReload.addEventListener("click", () => {
+  api.send("haLoad");
+})
 
 let ha_accts = {};
+let ha_details = {};
 let resList = {};
 
 
@@ -41,6 +48,13 @@ btnDateSearch.addEventListener("click", () => {
 
   api.send("resList", { resDateFrom, resDateTo }); // send to main
 });
+
+haListDiv.addEventListener("click", (e) => {
+  let thisTR = e.target.parentNode;
+  let keyID = thisTR.getAttribute("data-haID");
+  // let keyID = 611559; // 611559
+  api.send("getHaDetail", keyID)
+})
 
 const displayReservations = (data) => {
   clearSelections();
@@ -75,17 +89,15 @@ const displayReservations = (data) => {
       console.log("row: ", row, "  cellData: ", reservationID);
 
       api.send('getResDetail', reservationID);
-      // api.send("gstDetail", qryKeyVIP);
-      // api.send("gstReserves", qryKeyVIP);
-      // api.send("gstStays", qryKeyVIP);
     });
   }
   return rowCnt;
 }
+let rowCnt = 0;
+
 /*
  * get the search results back from preload.js
  */
-let rowCnt = 0;
 
 window.addEventListener("message", (event) => {
 
@@ -111,11 +123,13 @@ window.addEventListener("message", (event) => {
   if (event.data.type === "HA_Data") {
     // console.log('renderer: ', event.data.data);
     ha_accts = event.data.data;
-    dispHaList(ha_accts);
+    rowCnt = dispHaList(ha_accts);
   }
+  if (event.data.type === "gotHaDetail") {
+    console.log('renderer: ');
+    let haData = event.data.data;
+    dispHaDetail(haData);
+  }
+
 }
 );
-
-btnHaReload.addEventListener("click", () => {
-  api.send("haLoad");
-})

@@ -1,6 +1,8 @@
 import { dater, formatter } from "./utility.js";
 
-let tblHdrs = { guestID: "Guest ID" };
+let tblHdrs = {  };
+
+tblHdrs["guestID"] = "Guest ID";
 tblHdrs["guestLastName"] = "Last";
 tblHdrs["guestFirstName"] = "First";
 tblHdrs["isMainGuest"] = "Main?";
