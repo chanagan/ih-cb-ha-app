@@ -3,8 +3,8 @@ import { dater, formatter } from "./utility.js";
 
 let tblTotalHdrs = {};
 tblTotalHdrs['count'] = 'Count';
-tblTotalHdrs['credit'] = 'Charges';
-tblTotalHdrs['debit'] = 'Payments';
+tblTotalHdrs['credit'] = 'Total Charges';
+tblTotalHdrs['debit'] = 'Total Credits';
 tblTotalHdrs['quantity'] = 'Quantity';
 
 let tblRecordHdrs = {};
@@ -16,6 +16,8 @@ tblRecordHdrs["balance"] = "Balance";
 // tblRecordHdrs["description"] = "Description";
 // tblRecordHdrs["notes"] = "Notes";
 // tblRecordHdrs["quantity"] = "Quantity";
+// tblRecordHdrs["info"] = "?";
+// tblRecordHdrs["info"] = '<i class="bi bi-info-square"></i>';
 tblRecordHdrs["userName"] = "userName";
 
 let statusHdrs = {
@@ -45,14 +47,24 @@ console.log(jData);
  */
 
 export function dispHaDetail(data) {
-    let total = data.total;
+
+    // point to the 2 divs for the results
+    // const haDtlDivTotal = document.getElementById("haDtlDivTotal");
+    const haDtlDivRecords = document.getElementById("haDtlDivRecords");
+    if (data.length === 0) {
+        haDtlDivTotal.innerHTML = "No records found";
+        haDtlDivRecords.innerHTML = "";
+        return;
+    }
+
+    // let total = data.total;
     let records = data.records;
     let rowCnt = data.records.length;
     let newTable, newRow, newCol;
 
     // first, sort oldest to newest
     records.sort((a, b) => (a.transactionDateTime > b.transactionDateTime ? 1 : -1));
-    console.log('1st record: ', records[0]);
+    // console.log('1st record: ', records[0]);
 
     // set the initial balance
     records[0].balance = records[0].credit - records[0].debit;
@@ -63,61 +75,81 @@ export function dispHaDetail(data) {
     }
 
     records.sort((a, b) => (a.transactionDateTime < b.transactionDateTime ? 1 : -1));
-    console.log('records: ', records);
+    // console.log('records: ', records);
 
 
-    const haDtlDivTotal = document.getElementById("haDtlDivTotal");
-    const haDtlDivRecords = document.getElementById("haDtlDivRecords");
 
     // will be putting the results into a table
-    newTable = "<table border='0' id='haTotalTbl' class='table table-sm table-hover'>";
+    // newTable = "<table border='0' id='haTotalTbl' class='table table-sm table-hover'>";
 
 
-    // headers for the 'total' table
-    newRow = "<tr>";
-    for (let key1 in tblTotalHdrs) {
-        newRow += "<th>" + tblTotalHdrs[key1] + "</th>";
-    }
-    newRow += "</tr>";
-    newTable += newRow;
+    // // headers for the 'total' table
+    // newRow = "<tr>";
+    // for (let key1 in tblTotalHdrs) {
+    //     newRow += "<th>" + tblTotalHdrs[key1] + "</th>";
+    // }
+    // newRow += "</tr>";
+    // newTable += newRow;
 
-    // detail for the 'total' table
-    newRow = "<tr>";
-    for (let key1 in tblTotalHdrs) {
-        newRow += "<td>" + total[key1] + "</td>";
-    }
-    newRow += "</tr>";
-    newTable += newRow;
+    // // detail for the 'total' table
+    // newRow = "<tr>";
+    // for (let key1 in tblTotalHdrs) {
+    //     newRow += "<td>" + total[key1] + "</td>";
+    // }
+    // newRow += "</tr>";
+    // newTable += newRow;
 
-    newTable += "</table>";
-    haDtlDivTotal.innerHTML = newTable;
+    // newTable += "</table>";
+    // haDtlDivTotal.innerHTML = newTable;
 
+    let tdAlign = ''
 
-    newTable = "<table border='0' id='haRecordsTbl' class='table table-sm table-hover table-fixed'>";
+    newTable = "<table border='0' id='haRecordsTbl' class='table table-hover table-fixed'>";
     newTable += "<thead>";
     // headers for the 'records' table
     newRow = "<tr>";
-    for (let key1 in tblRecordHdrs) {
-        newRow += "<th>" + tblRecordHdrs[key1] + "</th>";
+    // for (let key1 in tblRecordHdrs) {
+    //     newRow += "<th>" + tblRecordHdrs[key1] + "</th>";
+    // }
+    for (let fldKey in tblRecordHdrs) {
+        switch (fldKey) {
+            case "credit":
+                tdAlign = 'right';
+                break;
+            case "debit":
+                tdAlign = 'right';
+                break;
+            case 'balance':
+                tdAlign = 'right';
+                break
+            case 'userName':
+                tdAlign = 'right';
+                // newCol = thisRecord[fldKey];
+                break
+            default:
+                tdAlign = 'left';
+            // newCol = thisRecord[fldKey];
+        }
+        newRow += `<th align="${tdAlign}">` + tblRecordHdrs[fldKey] + "</th>";
     }
-    // newRow += "<td class='glyphicon >&#xe086;</td>"
     newRow += "</tr>";
     newTable += newRow;
     newTable += "</thead>";
-    
+
 
     /**
      * "<img src='images/info-circle-fill.svg' title='" + data[i]['TRANTYPE_DESC'] + "'>"
 
      */
 
-
-    // detail for the 'total' table
-    let tdAlign = ''
-    for (let record in records) {
-        newRow = "<tr>";
+    newTable += "<tbody>";
+    // detail for the 'records' table
+    for (let row in records) {
+        // get current row
+        let thisRecord = records[row];
+        // set up some data for laster
+        newRow = `<tr data-note="${thisRecord['notes']}" data-desc="${thisRecord['description']}">`;
         for (let fldKey in tblRecordHdrs) {
-            let thisRecord = records[record];
             switch (fldKey) {
                 case "credit":
                     tdAlign = 'right';
@@ -131,14 +163,10 @@ export function dispHaDetail(data) {
                     tdAlign = 'right';
                     newCol = formatter.format(thisRecord[fldKey]);
                     break
-                case 'transactionDateTime':
-                    tdAlign = 'left';
+                case 'userName':
+                    tdAlign = 'right';
                     newCol = thisRecord[fldKey];
                     break
-                case 'description':
-                    newCol = "<img src='images/info-circle-fill.svg' title='" + thisRecord[fldKey] + "'>"
-                    break
-
                 default:
                     tdAlign = 'left';
                     newCol = thisRecord[fldKey];
@@ -148,12 +176,20 @@ export function dispHaDetail(data) {
         newRow += "</tr>";
         newTable += newRow;
     }
-
+    newTable += "</tbody>";
     newTable += "</table>";
     haDtlDivRecords.innerHTML = newTable;
 
 
     return
+
+    /**
+<a href="#" class="tip">
+   <img src="http://www.w3schools.com/html/pic_mountain.jpg">
+   <span>This is the CSS tooltip showing up when you mouse over the link</span>
+</a>
+    * 
+     */
 
     let rooms
     for (let key in guestList) {

@@ -97,3 +97,14 @@ export function showHaList() {
     document.getElementById("vipList").style.display = "none";
     document.getElementById("haList").style.display = "block";
 }
+
+export function haClearDetails() {
+    // document.getElementById("haDtlDivCount").innerHTML = ''
+    // document.getElementById("haDtlDivCharges").innerHTML = ''
+    // document.getElementById("haDtlDivCredits").innerHTML = ''
+    // document.getElementById("haDtlDivQty").innerHTML = ''
+    dispHaSelName.innerHTML = ''
+    haDtlDivRecords.innerHTML = ''
+    haDtlDivDesc.innerHTML = '&nbsp;'
+    haDtlDivNotes.innerHTML = '&nbsp;'
+}

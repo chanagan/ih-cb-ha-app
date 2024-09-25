@@ -5,7 +5,7 @@ import { dispResDetail } from "./js/dispResDetail.js";
 import { dispHaList } from "./js/dispHaList.js";
 import { dispHaDetail } from "./js/dispHaDetail.js";
 
-import { showHaList, showVipList, clearInfoBlocks, clearHighlight, clearSelections }
+import { haClearDetails, showHaList, showVipList, clearInfoBlocks, clearHighlight, clearSelections }
   from "./js/utility.js";
 // import { ipcRenderer } from "electron";
 
@@ -49,11 +49,23 @@ btnDateSearch.addEventListener("click", () => {
   api.send("resList", { resDateFrom, resDateTo }); // send to main
 });
 
+const haNameCol = 1;
+
 haListDiv.addEventListener("click", (e) => {
   let thisTR = e.target.parentNode;
   let keyID = thisTR.getAttribute("data-haID");
+  let haName = thisTR.children[haNameCol].innerHTML;
+  document.getElementById("dispHaSelName").innerHTML = haName;
   // let keyID = 611559; // 611559
   api.send("getHaDetail", keyID)
+})
+
+haDtlDivRecords.addEventListener("click", (e) => {
+  let thisTR = e.target.parentNode;
+  document.getElementById("haDtlDivDesc").innerHTML = thisTR.getAttribute("data-desc");
+  document.getElementById("haDtlDivNotes").innerHTML = thisTR.getAttribute("data-note");
+  // console.log(thisTR)
+
 })
 
 const displayReservations = (data) => {
@@ -125,9 +137,21 @@ window.addEventListener("message", (event) => {
     ha_accts = event.data.data;
     rowCnt = dispHaList(ha_accts);
   }
+
   if (event.data.type === "gotHaDetail") {
-    console.log('renderer: ');
+    // console.log('renderer: ');
     let haData = event.data.data;
+    if (haData.length ==   0) {
+      haClearDetails();
+      document.getElementById("dispHaSelName").innerHTML = 'No records found';
+      return
+    }
+    //haData.total.count
+    // document.getElementById("haDtlDivCount").innerHTML = haData.total.count;
+    // document.getElementById("haDtlDivCharges").innerHTML = haData.total.debit;
+    // document.getElementById("haDtlDivCredits").innerHTML = haData.total.credit;
+    // document.getElementById("haDtlDivQty").innerHTML = haData.total.quantity;
+
     dispHaDetail(haData);
   }
 

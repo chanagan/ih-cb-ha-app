@@ -5,6 +5,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="node_modules/bootstrap/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="node_modules/bootstrap-icons/font/bootstrap-icons.min.css">
     <link rel="stylesheet" href="css/appStyle.css">
 
     <title>IH / CB App - Hotel House Accounts</title>
@@ -65,9 +66,9 @@
                 </section>
                 <section class="col d-flex justify-content-center align-items-center">
                     <section class="col d-flex justify-content-center align-items-center">
-                        <label >Status</label>
-                        </section>  
-                        <section class="col d-flex justify-content-center align-items-center">
+                        <label>Status</label>
+                    </section>
+                    <section class="col d-flex justify-content-center align-items-center">
                         <input type="checkbox" name="Open" id="chkStatOpn" checked="checked">
                         <label for="chkStatOpn">Open</label>
                     </section>
@@ -80,19 +81,50 @@
                     </section>
                 </section>
             </section>
+            <section class="col border-bottom border-5 d-flex justify-content-center align-items-center">
+                Selected House Account: &nbsp;
+                <span id="dispHaSelName" style="font-weight: bold;" class="gstDisp"></span>
+            </section>
+        </div>
+        <div class="container mb-3 scrollable">
             <section class="row">
                 <section class="col  border-bottom border-5 d-flex  align-items-top">
                     <div id="haListDiv" class="list scrollable gstDisp "></div>
                 </section>
                 <section class="col  border-bottom border-5 align-items-top">
-                    <!-- <div id="haDtlDiv" class="expand scrollable gstDisp">Detail</div> -->
-                     <section id="haDtlDivTotal" class="row">
 
-                     </section>
-                     <section id="haDtlDiv" class="row">
-                        <div id="haDtlDivRecords" class="list scrollable gstDisp"></div>
-                        
-                     </section>
+                    <section class="row">
+                        <table class="table table-primary" style="font-size: smaller;">
+                            <!-- <tr>
+                                <th style="text-align: center;">Count</th>
+                                <th style="text-align: center;">Total Charges</th>
+                                <th style="text-align: center;">Total Credits</th>
+                                <th style="text-align: center;">Quantity</th>
+                            </tr>
+                            <tr>
+                                <td id="haDtlDivCount" style="text-align: center;"></td>
+                                <td id="haDtlDivCharges" style="text-align: center;"></td>
+                                <td id="haDtlDivCredits" style="text-align: center;"></td>
+                                <td id="haDtlDivQty" style="text-align: center;"></td>
+                            </tr> -->
+                            <tr>
+                                <th width="50%" style="text-align: center;">Description</th>
+                                <th  width="50%" style="text-align: center;">Notes</th>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <span id="haDtlDivDesc" class="gstDisp">&nbsp;</span>
+                                </td>
+                                <td >
+                                    <span id="haDtlDivNotes" class="gstDisp">&nbsp;</span>
+                                </td>
+                            </tr>
+                        </table>
+                    </section>
+                    <section id="haDtlDiv" class="row">
+                        <div id="haDtlDivRecords" class="list  gstDisp"></div>
+
+                    </section>
                 </section>
             </section>
 

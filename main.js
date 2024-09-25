@@ -15,7 +15,7 @@ let ha_accts;  // this is the global variable for the house accounts
 let resWindow, resData;
 
 const winWidth = 1200;
-const winHeight = 900;
+const winHeight = 800;
 const winX = 0;
 const winY = 0;
 
@@ -90,7 +90,7 @@ const getHA_List = () => {
         .then(res => res.json())
         .then((data) => {
             // console.log("main: getHA_List: ", data);
-            console.log("main: getHA_List: ");
+            // console.log("main: getHA_List: ");
             let haData = data.data;
             window.webContents.send("HA_Data", haData); // send to preload
         });
@@ -143,7 +143,7 @@ ipcMain.on('getResDetail',  (event, resID) => {
 // cbApiHA_Details
 
 ipcMain.on('getHaDetail',  (event, keyID) => {
-    console.log('ipcMain main: getHAdtl: ', keyID)
+    // console.log('ipcMain main: getHAdtl: ', keyID)
     let params = new URLSearchParams({
         propertyID: cbPropertyID,
         houseAccountID: keyID,
@@ -153,7 +153,7 @@ ipcMain.on('getHaDetail',  (event, keyID) => {
     fetch(cbServer + cbApiHA_Details + params, cbOptions)
         .then(res => res.json())
         .then((data) => {
-            console.log("main: getHaDetail: data: ", data);
+            // console.log("main: getHaDetail: data: ", data);
             resData = data.data;
             // return resData
             window.webContents.send("gotHaDetail", resData);

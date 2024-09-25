@@ -82,7 +82,7 @@ export function dispHaList(data) {
         // console.log("record: ", record);
         // newRow = '<tr>'
         let acctID = record['accountID'];
-        newRow = `<tr data-haid=${acctID}>`
+        newRow = `<tr data-haid=${acctID} >`
         displayCnt++;
         for (let key in tblHdrs) {
             switch (key) {

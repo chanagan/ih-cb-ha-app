@@ -13,13 +13,13 @@ contextBridge.exposeInMainWorld("api",{
 
 
 ipcRenderer.on('HA_Data', (event, data) => {
-    let ha_cnt = data.length
+    // let ha_cnt = data.length
     // console.log(`preload-HA_Data: leng: ${ha_cnt} - `, data )
     window.postMessage({type: 'HA_Data', data: data}) // send to renderer
 })
 
 ipcRenderer.on('gotHaDetail', (event, data) => {
-    console.log('preload gotHaDetail: ', data )
+    // console.log('preload gotHaDetail: ', data )
     window.postMessage({type: 'gotHaDetail', data: data}) // send to renderer
 })
 
