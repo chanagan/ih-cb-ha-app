@@ -1,58 +1,41 @@
-// import { ha_accts } from "./data_sets/ha_accts.js";
-// import { dispHaList } from "./js/dispHaList.js";
-// import { dispGstDtl } from "./dispGstSrchDtl.js";
-// import { dispGstResList } from "./dispGstResList.js";
-// import { dispGstResDtl } from "./dispGstResDtl.js";
-// import { dispGstStaysList } from "./dispGstStaysList.js";
-// import { dispGstStaysDtl } from "./dispGstStaysDtl.js";
+// import { api } from "./preload.js";
 
-import {updateStatusFlag} from "./js/utility.js";
+import { dispResList } from "./js/dispResList.js";
+import { dispResDetail } from "./js/dispResDetail.js";
+import { dispHaList } from "./js/dispHaList.js";
+import { dispHaDetail } from "./js/dispHaDetail.js";
 
-import {dispResList} from "./js/dispResList.js";
-import {dispResDetail} from "./js/dispResDetail.js";
+import { haClearDetails, showHaList, showVipList, clearInfoBlocks, clearHighlight, clearSelections }
+  from "./js/utility.js";
+// import { ipcRenderer } from "electron";
+
+// load up the HA data early
+showHaList();
+
+navHA.addEventListener("click", showHaList);
+navVIP.addEventListener("click", showVipList);
+btnHaNmSearch.addEventListener("click", () => {
+  dispHaList(ha_accts);
+})
+chkStatOpn.addEventListener("click", () => {
+  dispHaList(ha_accts);
+})
+chkStatClsd.addEventListener("click", () => {
+  dispHaList(ha_accts);
+})
+btnHaReload.addEventListener("click", () => {
+  api.send("haLoad");
+})
 
 let ha_accts = {};
+let ha_details = {};
 let resList = {};
 
-const clearInfoBlocks = () => { 
-  let dispElems = document.getElementsByClassName("gstDisp"); 
-  for (let i = 0; i < dispElems.length; i++) { 
-    dispElems[i].innerHTML = ""; 
-    // dispElems[i].classList.add("do-not-show");
-  }
-}
-
-const clearHighlight = () => {  
-  let dispElems = document.getElementsByClassName("highlight"); 
-  for (let i = 0; i < dispElems.length; i++) { 
-    dispElems[i].classList.remove("highlight"); 
-  }
-}
-
-const clearSelections = () => {
-  clearHighlight();
-  clearInfoBlocks();
-}
 
 let reservationList;
 let today = Date()
 let later = today + 5
 
-/**
- * when one of the status buttons is clicked,
- * - this routine will update the on/off flags for each status
- * - then display the results
- * 
- */
-
-hdrStatusChecks.addEventListener("click", (event) => {
-  // console.log("hdrStatus clicked");
-  let clsName = event.srcElement.className;
-  let clsChecked = event.srcElement.checked;
-  document.getElementById("resDtlDiv").innerHTML = "";
-  updateStatusFlag(clsName, clsChecked);
-  displayReservations(resList);
-});
 
 /*
  * Clicked on the search button
@@ -60,11 +43,32 @@ hdrStatusChecks.addEventListener("click", (event) => {
 btnDateSearch.addEventListener("click", () => {
   let resDateFrom = document.getElementById("resDateFrom").value;
   let resDateTo = document.getElementById("resDateTo").value;
-// let srchID = 'all'
+  // let srchID = 'all'
   clearInfoBlocks();
 
-  api.send("resList", {resDateFrom, resDateTo}); // send to main
+  api.send("resList", { resDateFrom, resDateTo }); // send to main
 });
+
+const haNameCol = 1;
+
+haListDiv.addEventListener("click", (e) => {
+  let thisTR = e.target.parentNode;
+  let keyID = thisTR.getAttribute("data-haID");
+  let haName = thisTR.children[haNameCol].innerHTML;
+  // document.getElementById("dispHaSelName").innerHTML = haName;
+  haClearDetails();
+  dispHaSelName.innerHTML = `Selected House Account: <b> ${haName} </b>`;
+  // let keyID = 611559; // 611559
+  api.send("getHaDetail", keyID)
+})
+
+haDtlDivRecords.addEventListener("click", (e) => {
+  let thisTR = e.target.parentNode;
+  document.getElementById("haDtlDivDesc").innerHTML = thisTR.getAttribute("data-desc");
+  document.getElementById("haDtlDivNotes").innerHTML = thisTR.getAttribute("data-note");
+  // console.log(thisTR)
+
+})
 
 const displayReservations = (data) => {
   clearSelections();
@@ -72,7 +76,7 @@ const displayReservations = (data) => {
   // go show results of the guest search
   rowCnt = dispResList(resList);
   // console.log('rowCnt: ', rowCnt);
-  
+
   let cntRes = document.getElementById("cntRes");
   cntRes.innerHTML = "Number of reservations found: <b>" + rowCnt + "</>";
 
@@ -83,34 +87,34 @@ const displayReservations = (data) => {
 
     // this will fire when the table is clicked
     listTbl.addEventListener("click", (e) => {
-      clearSelections();
+      // clearSelections();
+      clearHighlight();
       let thisTR = e.target.parentNode;
 
       let reservationID = thisTR.getAttribute("data-resID");
-      thisTR.classList.add("highlight");
+      thisTR.classList.add("table-active");
 
       // let col = e.target.cellIndex;
       let dispSelName = document.getElementById("dispSelName");
       let row = e.target.parentNode.rowIndex;
       let selName = listTbl.rows[row].cells[1].innerHTML;
-      dispSelName.innerHTML = 'Selected Guest: ' + selName;
+      dispSelName.innerHTML = selName;
 
       console.log("row: ", row, "  cellData: ", reservationID);
 
-      api.send(     'getResDetail', reservationID);
-      // api.send("gstDetail", qryKeyVIP);
-      // api.send("gstReserves", qryKeyVIP);
-      // api.send("gstStays", qryKeyVIP);
+      api.send('getResDetail', reservationID);
     });
   }
   return rowCnt;
 }
+let rowCnt = 0;
+
 /*
  * get the search results back from preload.js
  */
-let rowCnt = 0;
+
 window.addEventListener("message", (event) => {
-  
+
   /**
    * have a list of reservations from main=>preload=>renderer
    */
@@ -121,11 +125,37 @@ window.addEventListener("message", (event) => {
     // return
   }
 
+  /** 
+   * got the reservation detail from main=>preload=>renderer
+   */
   if (event.data.type === "gotResDetail") {
     console.log('renderer: ', event.data.data);
     let resData = event.data.data;
     dispResDetail(resData);
   }
+
+  if (event.data.type === "HA_Data") {
+    // console.log('renderer: ', event.data.data);
+    ha_accts = event.data.data;
+    rowCnt = dispHaList(ha_accts);
+  }
+
+  if (event.data.type === "gotHaDetail") {
+    // console.log('renderer: ');
+    let haData = event.data.data;
+    if (haData.length ==   0) {
+      haClearDetails();
+      document.getElementById("dispHaSelName").innerHTML = 'No records found';
+      return
+    }
+    //haData.total.count
+    // document.getElementById("haDtlDivCount").innerHTML = haData.total.count;
+    // document.getElementById("haDtlDivCharges").innerHTML = haData.total.debit;
+    // document.getElementById("haDtlDivCredits").innerHTML = haData.total.credit;
+    // document.getElementById("haDtlDivQty").innerHTML = haData.total.quantity;
+
+    dispHaDetail(haData);
+  }
+
 }
 );
-

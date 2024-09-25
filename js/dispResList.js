@@ -1,10 +1,10 @@
-import { dater, formatter, statusFlag } from "./utility.js";
+import { dater, formatter } from "./utility.js";
 
 let tblHdrs = { reservationID: "Res ID" };
 tblHdrs["guestName"] = "Guest Name";
 tblHdrs["nights"] = "Nights";
 tblHdrs["startDate"] = "Check In";
-tblHdrs["dow"] = "Day of Week";
+tblHdrs["dow"] = "DoW";
 tblHdrs["adults"] = "Adults";
 // tblHdrs['isPrivate'] = 'Private?'
 
@@ -51,13 +51,13 @@ export function dispResList(data) {
         let diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
         record.nights = diffDays;
     }
-    console.log("dispResList: data: ", rowCnt, " : ", data);
+    // console.log("dispResList: data: ", rowCnt, " : ", data);
 
     // if data returned, display table
 
     // will be putting the results into a table
     let displayCnt = 0;
-    let newTable = "<table border='0' id='listTbl'>";
+    let newTable = "<table id='listTbl' class='table table-sm table-hover'>";
     // if (Array.isArray(data)) {
     // create table header
     newTable += "<thead>";
@@ -105,6 +105,7 @@ export function dispResList(data) {
             }
             // close the row
             newRow += "</tr>";
+            
             // add the row to the table
             newTable += newRow;
         }

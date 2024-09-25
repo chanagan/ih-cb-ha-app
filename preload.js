@@ -1,20 +1,27 @@
 const { contextBridge, ipcRenderer } = require('electron')  
 // let {ha_accts} = require("./data_sets/ha_accts.js");
 
-const API = {
-    send: (channel, data) => {
-        console.log(channel, data)
-        ipcRenderer.send(channel, data)
-    },
-    receive: (channel, func) => {
-        ipcRenderer.on(channel, (event, ...args) => func(...args))
-        console.log(channel);
-        console.log(args);
-    },
-    appData: {rows: []}
-}
+// const {ipcRenderer, contextBridge} = require('electron');
+contextBridge.exposeInMainWorld("api",{
+    send: (channel, data) => ipcRenderer.send(channel, data),
+    // receive: (channel, func) => ipcRenderer.on(
+    //     channel,
+    //     (event, ...args) => func(args)
+    // )
+})
 
-contextBridge.exposeInMainWorld('api', API)                                                                                                                                                
+
+
+ipcRenderer.on('HA_Data', (event, data) => {
+    // let ha_cnt = data.length
+    // console.log(`preload-HA_Data: leng: ${ha_cnt} - `, data )
+    window.postMessage({type: 'HA_Data', data: data}) // send to renderer
+})
+
+ipcRenderer.on('gotHaDetail', (event, data) => {
+    // console.log('preload gotHaDetail: ', data )
+    window.postMessage({type: 'gotHaDetail', data: data}) // send to renderer
+})
 
 ipcRenderer.on('resData', (event, data) => {
     // console.log('preload-resData: ', data )
