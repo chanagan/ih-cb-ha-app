@@ -55,7 +55,9 @@ haListDiv.addEventListener("click", (e) => {
   let thisTR = e.target.parentNode;
   let keyID = thisTR.getAttribute("data-haID");
   let haName = thisTR.children[haNameCol].innerHTML;
-  document.getElementById("dispHaSelName").innerHTML = haName;
+  // document.getElementById("dispHaSelName").innerHTML = haName;
+  haClearDetails();
+  dispHaSelName.innerHTML = `Selected House Account: <b> ${haName} </b>`;
   // let keyID = 611559; // 611559
   api.send("getHaDetail", keyID)
 })
