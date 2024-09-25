@@ -104,7 +104,7 @@ export function dispHaDetail(data) {
 
     let tdAlign = ''
 
-    newTable = "<table border='0' id='haRecordsTbl' class='table table-hover table-fixed'>";
+    newTable = "<table border='0' id='haRecordsTbl' class='table table-hover table-sm'>";
     newTable += "<thead>";
     // headers for the 'records' table
     newRow = "<tr>";
