@@ -18,7 +18,7 @@
 <body>
 
     <!-- logos and titles -->
-    <div class="container mb-3">
+    <div class="container mb-2">
         <section class="row">
             <section class="col  border-bottom border-5 d-flex justify-content-center align-items-center">
                 <img src="images/IH-logo.png" alt="IH Logo" width="300" height="100" />
@@ -51,11 +51,11 @@
         </div>
     </nav>
 
-
     <!-- section for house accounts -->
-    <div class="container-fluid" id="haList">
-        <div class="container mb-3">
-            <section class="row border-bottom border-5 d-flex  align-items-center">
+    <div class="container" id="haList">
+        <div class="container mb-1">
+            <section class="row border-bottom border-2 d-flex  align-items-center">
+                <!-- search column -->
                 <section class="col">
                     <img src="images/search.svg" alt="Search Icon" width="20" height="20" />
                     <input type="text" id="txtHaNmSrch" placeholder="House Account Name" style="padding-right: 5px;" />
@@ -81,12 +81,12 @@
                     </section>
                 </section>
             </section>
-            <section class="col border-bottom border-5 d-flex justify-content-center align-items-center">
+            <section class="row border-bottom border-2 d-flex justify-content-center align-items-center">
                 Selected House Account: &nbsp;
                 <span id="dispHaSelName" style="font-weight: bold;" class="gstDisp"></span>
             </section>
         </div>
-        <div class="container mb-3 scrollable">
+        <div class="container mb-1 ">
             <section class="row">
                 <section class="col  border-bottom border-5 d-flex  align-items-top">
                     <div id="haListDiv" class="list scrollable gstDisp "></div>
@@ -95,26 +95,14 @@
 
                     <section class="row">
                         <table class="table table-primary" style="font-size: smaller;">
-                            <!-- <tr>
-                                <th style="text-align: center;">Count</th>
-                                <th style="text-align: center;">Total Charges</th>
-                                <th style="text-align: center;">Total Credits</th>
-                                <th style="text-align: center;">Quantity</th>
-                            </tr>
                             <tr>
-                                <td id="haDtlDivCount" style="text-align: center;"></td>
-                                <td id="haDtlDivCharges" style="text-align: center;"></td>
-                                <td id="haDtlDivCredits" style="text-align: center;"></td>
-                                <td id="haDtlDivQty" style="text-align: center;"></td>
-                            </tr> -->
-                            <tr>
-                                <th width="50%" style="text-align: center;">Description</th>
-                                <th  width="50%" style="text-align: center;">Notes</th>
-                            </tr>
-                            <tr>
+                                <th width="25%" style="text-align: left;">Description</th>
                                 <td>
                                     <span id="haDtlDivDesc" class="gstDisp">&nbsp;</span>
                                 </td>
+                            </tr>
+                            <tr>
+                                <th style="text-align: left;">Notes</th>
                                 <td >
                                     <span id="haDtlDivNotes" class="gstDisp">&nbsp;</span>
                                 </td>
