@@ -32,7 +32,7 @@ const statClosed = 'closed';
  */
 
 export function dispHaList(data) {
-    
+
 
     let record
     // set up a search key if there is one
