@@ -108,3 +108,9 @@ export function haClearDetails() {
     haDtlDivDesc.innerHTML = '&nbsp;'
     haDtlDivNotes.innerHTML = '&nbsp;'
 }
+
+export function haShowDetailNotes(e) {
+    let thisTR = e.target.parentNode;
+    document.getElementById("haDtlDivDesc").innerHTML = thisTR.getAttribute("data-desc");
+    document.getElementById("haDtlDivNotes").innerHTML = thisTR.getAttribute("data-note");
+}
