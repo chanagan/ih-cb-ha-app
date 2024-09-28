@@ -11,6 +11,7 @@ import { haClearDetails, showHaList, showVipList, clearInfoBlocks, clearHighligh
 
 // load up the HA data early
 showHaList();
+// showVipList();
 
 navHA.addEventListener("click", showHaList);
 navVIP.addEventListener("click", showVipList);
@@ -52,7 +53,13 @@ btnDateSearch.addEventListener("click", () => {
 const haNameCol = 1;
 
 haListDiv.addEventListener("click", (e) => {
+  let dispElems = haListDiv.getElementsByClassName("table-active");
+  for (let i = 0; i < dispElems.length; i++) {
+    dispElems[i].classList.remove("table-active");
+  }
   let thisTR = e.target.parentNode;
+  thisTR.classList.add("table-active");
+
   let keyID = thisTR.getAttribute("data-haID");
   let haName = thisTR.children[haNameCol].innerHTML;
   // document.getElementById("dispHaSelName").innerHTML = haName;
@@ -70,8 +77,42 @@ haDtlDivRecords.addEventListener("click", (e) => {
 
 })
 
+// haRecordsTbody.addEventListener('mouseover', (e) => {
+//   let thisTR = e.target.parentNode;
+//   document.getElementById("haDtlDivDesc").innerHTML = thisTR.getAttribute("data-desc");
+//   document.getElementById("haDtlDivNotes").innerHTML = thisTR.getAttribute("data-note");
+// })
+
 const displayReservations = (data) => {
   clearSelections();
+
+  // need some preprocessing for the data
+  let rowCnt = data.length;
+  // if there were no reservations, return
+  if (rowCnt === 0) {
+    resListDiv.innerHTML = "<b>No Reservations</b>";
+    return
+  }
+
+  // now let's see how many VIP reservations there are
+  let vipGuests = [];
+  let record
+  for (let i = 0; i < rowCnt; i++) {
+    record = data[i];
+    let sDate = new Date(record.startDate);
+    let eDate = new Date(record.endDate);
+    let diffTime = Math.abs(eDate - sDate);
+    let diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    record.nights = diffDays;
+    if (record.nights > 5) {
+      vipGuests.push(record);
+    }
+
+  }
+  console.log("displayReservations: data: ", rowCnt, " : ", vipGuests);
+
+
+  console.log("displayReservations: data: ", rowCnt, " : ", data);
 
   // go show results of the guest search
   rowCnt = dispResList(resList);
@@ -143,7 +184,7 @@ window.addEventListener("message", (event) => {
   if (event.data.type === "gotHaDetail") {
     // console.log('renderer: ');
     let haData = event.data.data;
-    if (haData.length ==   0) {
+    if (haData.length == 0) {
       haClearDetails();
       document.getElementById("dispHaSelName").innerHTML = 'No records found';
       return
