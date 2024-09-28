@@ -101,7 +101,7 @@ export function dispHaList(data) {
         // push it to the showRecords array
         showRecords.push(record)
         displayCnt++;
-        continue
+        // continue
 
         // console.log("record: ", record);
         // newRow = '<tr>'
@@ -124,10 +124,8 @@ export function dispHaList(data) {
 
     // }
     // close the table
-    /*
     newTable += "</table>";
     haListDiv.innerHTML = newTable;
-    */
     cntHA.innerHTML = "Accounts: <b>" + displayCnt + "</b>";
 
     // return displayCnt;

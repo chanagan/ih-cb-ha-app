@@ -158,5 +158,28 @@ ipcMain.on('getHaDetail',  (event, keyID) => {
             // return resData
             window.webContents.send("gotHaDetail", resData);
         });
+})
 
+ipcMain.on('getHaBalance',  (event, record) => {
+    let keyID = record.accountID;
+    console.log('ipcMain main: getHAdtl: ', keyID)
+    let params = new URLSearchParams({
+        propertyID: cbPropertyID,
+        houseAccountID: keyID,
+        resultsFrom: '2024-07-08',
+        resultsTo: '2024-12-31',
+    })
+    fetch(cbServer + cbApiHA_Details + params, cbOptions)
+        .then(res => res.json())
+        .then((data) => {
+            console.log('keyID: ', keyID, ' record: ', record)
+            console.log("main: getHaDetail: data: ", data);
+            resData = data.data;
+            let credit = resData.total.credit.slice(4)
+            let debit = resData.total.debit.slice(4)
+            let balance = credit - debit
+            console.log(`credit: ${credit} - debit: ${debit} = balance: ${balance}`) // console.log('credit: ', credit) 
+            // return resData
+            // window.webContents.send("gotHaDetail", resData);
+        });
 })
