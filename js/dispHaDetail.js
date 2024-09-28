@@ -1,5 +1,5 @@
 
-import { dater, formatter } from "./utility.js";
+import { dater, formatter, haShowDetailNotes } from "./utility.js";
 
 let tblTotalHdrs = {};
 tblTotalHdrs['count'] = 'Count';
@@ -142,7 +142,7 @@ export function dispHaDetail(data) {
 
      */
 
-    newTable += "<tbody>";
+    newTable += "<tbody id='haRecordsTbody'>";
     // detail for the 'records' table
     for (let row in records) {
         // get current row
@@ -179,7 +179,14 @@ export function dispHaDetail(data) {
     newTable += "</tbody>";
     newTable += "</table>";
     haDtlDivRecords.innerHTML = newTable;
-
+    
+    haRecordsTbody.addEventListener('mouseover', (e) => {
+        haShowDetailNotes(e)
+        // let thisTR = e.target.parentNode;
+        // document.getElementById("haDtlDivDesc").innerHTML = thisTR.getAttribute("data-desc");
+        // document.getElementById("haDtlDivNotes").innerHTML = thisTR.getAttribute("data-note");
+      })
+      
 
     return
 

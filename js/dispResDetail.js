@@ -60,6 +60,8 @@ export function dispResDetail(data) {
     // will be putting the results into a table
     let newTable = "<table border='0' id='listTbl' class='table table-sm'>";
 
+    let newRow = "";
+    let newCell = "";
     // create table header
     // newTable += "<thead>";
     // newTable += "<tr>";
@@ -74,7 +76,7 @@ export function dispResDetail(data) {
     for (let key in guestList) {
         let guest = guestList[key];
         rooms = (guest.isMainGuest) ? guest.rooms : "";
-        let newRow = "<tr>";
+        newRow = "<tr>";
         // console.log("dispResDetail: guestList: ", key, " : ", guestList[key]);
         for (let key1 in tblHdrs) {
             switch (key1) {
