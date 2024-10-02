@@ -3,8 +3,8 @@ import { dater } from "./utility.js";
 let tblHdrs = { accountID: "Acct ID" };
 tblHdrs["accountName"] = "Name";
 tblHdrs["accountStatus"] = "Status";
-tblHdrs["dateCreated"] = "Created";
-tblHdrs['isPrivate'] = 'Private?'
+// tblHdrs["dateCreated"] = "Created";
+// tblHdrs['isPrivate'] = 'Private?'
 
 // let daysOfWeek = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
 
@@ -43,7 +43,7 @@ export function dispHaList(data) {
 
     // if no data returned, display message and return
     if (rowCnt === 0) {
-        haListDiv.innerHTML = "<b>No House Accounts</b>";
+        haListDiv.innerHTML = "<b>No Accounts</b>";
         return 0;
     }
 
@@ -67,7 +67,17 @@ export function dispHaList(data) {
     newTable += "</thead>";
 
     // create table rows
+    let wantClosed = chkStatClsd.checked
+    let wantOpen = chkStatOpn.checked 
+    let wantEmp = chkFilterEmp.checked
+    let wantGC = chkFilterGc.checked
+
     let displayCnt = 0;
+    let isEmp = false
+    let isGC = false
+
+    let showRecords = []
+
     for (let i = 0; i < rowCnt; i++) {
         // newTable += "<tr>";
         record = data[i];
@@ -75,15 +85,28 @@ export function dispHaList(data) {
             continue
         }
         // check for status filters
-        if ((record.accountStatus === statClosed && !chkStatClsd.checked)
-            || (record.accountStatus === statOpen && !chkStatOpn.checked))
+        if ((record.accountStatus === statClosed && !wantClosed)
+            || (record.accountStatus === statOpen && !wantOpen))
          { continue }
+
+         // check for acct type filters
+        isGC = record.accountName.startsWith('GC')
+        isEmp = record.accountName.startsWith('IH')
+        if (wantEmp && !isEmp) { continue }
+        if (wantGC && !isGC) { continue }
+        if ( isGC && !wantGC) { continue }
+        if ( isEmp && !wantEmp) { continue }
+
+        // at this point we're going to show this record, so,
+        // push it to the showRecords array
+        showRecords.push(record)
+        displayCnt++;
+        // continue
 
         // console.log("record: ", record);
         // newRow = '<tr>'
         let acctID = record['accountID'];
         newRow = `<tr data-haid=${acctID} >`
-        displayCnt++;
         for (let key in tblHdrs) {
             switch (key) {
                 case "dateCreated":
@@ -103,8 +126,8 @@ export function dispHaList(data) {
     // close the table
     newTable += "</table>";
     haListDiv.innerHTML = newTable;
-    
-    cntHA.innerHTML = "Number of House Accounts: <b>" + displayCnt + "</b>";
+    cntHA.innerHTML = "Accounts: <b>" + displayCnt + "</b>";
 
-    return displayCnt;
+    // return displayCnt;
+    return showRecords;
 }

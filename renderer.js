@@ -5,6 +5,9 @@ import { dispResDetail } from "./js/dispResDetail.js";
 import { dispHaList } from "./js/dispHaList.js";
 import { dispHaDetail } from "./js/dispHaDetail.js";
 
+import { haGetBalances } from "./js/haUtils.js";
+
+
 import { haClearDetails, showHaList, showVipList, clearInfoBlocks, clearHighlight, clearSelections }
   from "./js/utility.js";
 // import { ipcRenderer } from "electron";
@@ -22,6 +25,12 @@ chkStatOpn.addEventListener("click", () => {
   dispHaList(ha_accts);
 })
 chkStatClsd.addEventListener("click", () => {
+  dispHaList(ha_accts);
+})
+chkFilterEmp.addEventListener("click", () => {
+  dispHaList(ha_accts);
+})
+chkFilterGc.addEventListener("click", () => {
   dispHaList(ha_accts);
 })
 btnHaReload.addEventListener("click", () => {
@@ -175,10 +184,13 @@ window.addEventListener("message", (event) => {
     dispResDetail(resData);
   }
 
+  let showRecords = []
   if (event.data.type === "HA_Data") {
     // console.log('renderer: ', event.data.data);
     ha_accts = event.data.data;
-    rowCnt = dispHaList(ha_accts);
+    // rowCnt = dispHaList(ha_accts);
+    showRecords = dispHaList(ha_accts);
+    haGetBalances(showRecords);
   }
 
   if (event.data.type === "gotHaDetail") {
