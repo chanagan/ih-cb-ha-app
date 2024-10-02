@@ -22,10 +22,6 @@ const winX = cbConfig.winX;
 const winY = cbConfig.winY;
 const openDevTools = cbConfig.devTools;
 
-// const winWidth = 1200;
-// const winHeight = 800;
-// const winX = 0;
-// const winY = 0;
 
 let window;
 
@@ -71,8 +67,7 @@ app.whenReady().then(() => {
  * - the list is used to populate the dropdown
  */
 
-// const cbPropertyID = "310046";
-// const cbServer = "https://hotels.cloudbeds.com/api/v1.2/";
+
 // // const cbApiCall = 'getGuestList'
 const cbPropertyID = cbConfig.cbPropertyID;
 const cbServer = cbConfig.cbServer;
@@ -83,13 +78,6 @@ const cbApiHA_List = "getHouseAccountList?";
 const cbApiGetReservations = "getReservations?";
 // const cbApiCall = 'getDashboard'
 
-// const cbOptions = {
-//     method: "GET",
-//     headers: {
-//         "x-api-key": "cbat_AVYJ4dezriaScXdXY9WJrVyjHl5PxxY5",
-//     },
-// };
-// 
 const getHA_List = () => {
     let params = new URLSearchParams({
         propertyID: cbPropertyID,
