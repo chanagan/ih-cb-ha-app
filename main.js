@@ -1,6 +1,6 @@
 const { app, BrowserWindow, ipcMain } = require("electron");
-const { get } = require("http");
 const fetch = require("electron-fetch").default;
+const nodeFs = require("fs");
 
 const path = require("path");
 // // const sqlite3 = require("sqlite3").verbose();
@@ -14,10 +14,18 @@ const path = require("path");
 let ha_accts;  // this is the global variable for the house accounts
 let resWindow, resData;
 
-const winWidth = 1200;
-const winHeight = 800;
-const winX = 0;
-const winY = 0;
+const cbConfig = JSON.parse(nodeFs.readFileSync('./.config.json', 'utf-8'));
+
+const winWidth = cbConfig.winWidth;
+const winHeight = cbConfig.winHeight;
+const winX = cbConfig.winX;
+const winY = cbConfig.winY;
+const openDevTools = cbConfig.devTools;
+
+// const winWidth = 1200;
+// const winHeight = 800;
+// const winX = 0;
+// const winY = 0;
 
 let window;
 
@@ -44,7 +52,7 @@ const createWindow = () => {
         height: winHeight,
         x: winWidth,
         y: 100,
-        show: true,
+        show: openDevTools,
     });
 };
 
@@ -63,21 +71,25 @@ app.whenReady().then(() => {
  * - the list is used to populate the dropdown
  */
 
-const cbPropertyID = "310046";
-const cbServer = "https://hotels.cloudbeds.com/api/v1.2/";
-// const cbApiCall = 'getGuestList'
+// const cbPropertyID = "310046";
+// const cbServer = "https://hotels.cloudbeds.com/api/v1.2/";
+// // const cbApiCall = 'getGuestList'
+const cbPropertyID = cbConfig.cbPropertyID;
+const cbServer = cbConfig.cbServer;
+const cbOptions = cbConfig.cbOptions;
+
 const cbApiHA_Details = "getHouseAccountDetails?";
 const cbApiHA_List = "getHouseAccountList?";
 const cbApiGetReservations = "getReservations?";
 // const cbApiCall = 'getDashboard'
 
-const cbOptions = {
-    method: "GET",
-    headers: {
-        "x-api-key": "cbat_AVYJ4dezriaScXdXY9WJrVyjHl5PxxY5",
-    },
-};
-
+// const cbOptions = {
+//     method: "GET",
+//     headers: {
+//         "x-api-key": "cbat_AVYJ4dezriaScXdXY9WJrVyjHl5PxxY5",
+//     },
+// };
+// 
 const getHA_List = () => {
     let params = new URLSearchParams({
         propertyID: cbPropertyID,
@@ -93,7 +105,9 @@ const getHA_List = () => {
             // console.log("main: getHA_List: ");
             let haData = data.data;
             window.webContents.send("HA_Data", haData); // send to preload
-        });
+        })
+        .catch(err => console.error(err))
+        ;
 
 }
 // user asked for a reload of the HA data
@@ -162,7 +176,7 @@ ipcMain.on('getHaDetail',  (event, keyID) => {
 
 ipcMain.on('getHaBalance',  (event, record) => {
     let keyID = record.accountID;
-    console.log('ipcMain main: getHAdtl: ', keyID)
+    console.log('ipcMain main: getHaBalance: ', keyID)
     let params = new URLSearchParams({
         propertyID: cbPropertyID,
         houseAccountID: keyID,
@@ -173,7 +187,7 @@ ipcMain.on('getHaBalance',  (event, record) => {
         .then(res => res.json())
         .then((data) => {
             console.log('keyID: ', keyID, ' record: ', record)
-            console.log("main: getHaDetail: data: ", data);
+            console.log("main: getHaBalance: data: ", data);
             resData = data.data;
             let credit = resData.total.credit.slice(4)
             let debit = resData.total.debit.slice(4)
