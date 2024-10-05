@@ -1,15 +1,32 @@
-import { dater, formatter } from "./utility.js";
+import { dater } from "./utility.js";
 
-let tblHdrs = { reservationID: "Res ID" };
-tblHdrs["guestName"] = "Guest Name";
-tblHdrs["nights"] = "Nights";
-tblHdrs["startDate"] = "Check In";
-tblHdrs["dow"] = "DoW";
-tblHdrs["adults"] = "Adults";
+let tblHdrs = [];
+tblHdrs["reservationID"] = {'align': 'left', 'value': 'Res ID'};
+tblHdrs["guestName"] = {'align': 'left', 'value': 'Guest Name'};
+tblHdrs["nights"] = {'align': 'center', 'value': 'Nights'};
+tblHdrs["startDate"] = {'align': 'center', 'value': 'Check In'};
+tblHdrs["dow"] = {'align': 'center', 'value': 'Dow'};
+tblHdrs["adults"] = {'align': 'center', 'value': 'Adults'};
+
+
+
+// tblHdrs["guestName"] = "Guest Name";
+// tblHdrs["nights"] = "Nights";
+// tblHdrs["startDate"] = "Check In";
+// tblHdrs["dow"] = {'align': 'center', 'value': 'Dow'};
+// tblHdrs["adults"] = "Adults";
 // tblHdrs['isPrivate'] = 'Private?'
 
-let daysOfWeek = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
+const daysOfWeek = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
+const vipDays = 6
 
+const computeNights = (startDate, endDate) => {
+    let start = new Date(startDate);
+    let end = new Date(endDate);
+    let timeDiff = Math.abs(end.getTime() - start.getTime());
+    let diffDays = Math.ceil(timeDiff / (1000 * 3600 * 24));
+    return diffDays
+}
 /**
  * let jData = [
   { name: "GeeksforGeeks", est: 2009 },
@@ -29,7 +46,7 @@ console.log(jData);
 export function dispResList(data) {
     let record
     let rowCnt = data.length;
-    let haTblDiv = document.getElementById("resListDiv");
+
 
     // if no data returned, display message and return
     if (rowCnt === 0) {
@@ -45,76 +62,79 @@ export function dispResList(data) {
     // compute the number of nights
     for (let i = 0; i < rowCnt; i++) {
         record = data[i];
-        let sDate = new Date(record.startDate);
-        let eDate = new Date(record.endDate);
-        let diffTime = Math.abs(eDate - sDate);
-        let diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-        record.nights = diffDays;
+        record.nights = computeNights(record.startDate, record.endDate)
     }
-    // console.log("dispResList: data: ", rowCnt, " : ", data);
 
-    // if data returned, display table
+    let listTable, listHead, listBody;
+    let listRow, listCell;
 
-    // will be putting the results into a table
-    let displayCnt = 0;
-    let newTable = "<table id='listTbl' class='table table-sm table-hover'>";
-    // if (Array.isArray(data)) {
-    // create table header
-    newTable += "<thead>";
-    newTable += "<tr>";
+
+    // let's make a new table
+    listTable = document.createElement("table");
+    listTable.id = "listTbl";
+    listTable.className = "table table-sm table-hover";
+    resListDiv.appendChild(listTable);
+
+    // now need to create the table parts
+    listHead = document.createElement("thead");
+    listTable.appendChild(listHead);
+    listBody = document.createElement("tbody");
+    listTable.appendChild(listBody);
+
+    // now the header row
+    listRow = document.createElement("tr");
+    listHead.appendChild(listRow);
     for (let key in tblHdrs) {
-        newTable += "<th>" + tblHdrs[key] + "</th>";
+        listCell = document.createElement("th");
+        listCell.innerHTML = tblHdrs[key].value;
+        listRow.appendChild(listCell);
     }
-    newTable += "</tr>";
-    newTable += "</thead>";
-    // create table rows
+
+    // now the data rows
+    // loop through the records
+    let displayCount = 0;
     for (let i = 0; i < rowCnt; i++) {
-        // newTable += "<tr>";
+
+        // get the record and check some filters
         record = data[i];
         if (record.status === "canceled") {
             continue;
         }
-        let resStatus = record.nights < 6 ? record.status : "vip";
+        if (record.nights < vipDays) {
+            continue;
+        }
 
-        // if (statusFlag(resStatus)) {
-        if (resStatus === "vip") {
-            displayCnt++;
-            let resID = record.reservationID;
-            // start a new row
-            // let newRow = `<tr class='${resStatus}' data-resID=${resID}>`;
-            let newRow = `<tr  data-resID=${resID}>`;
-            for (let key in tblHdrs) {
-                switch (key) {
-                    case "startDate":
-                        newRow += "<td>" + dater(record[key]) + "</td>";
-                        break;
-                    // case "endDate":
-                    //     newTable += "<td>" + dater(record[key]) + "</td>";
-                    //     break;
-                    case "dow":
-                        let dowNum = new Date(record.startDate).getDay();
-                        newRow +=
-                            "<td align='center'>" +
-                            daysOfWeek[dowNum] +
-                            "</td>";
-                        break;
-                    default:
-                        newRow += "<td>" + record[key] + "</td>";
-                        break;
-                }
+        // need a row for each record
+        listRow = document.createElement("tr");
+        listBody.appendChild(listRow);
+
+        displayCount++;
+        let resID = record.reservationID;
+        // start a new row
+        listRow.setAttribute("data-resID", resID);
+        for (let key in tblHdrs) {
+            listCell = document.createElement("td");
+            listRow.appendChild(listCell);
+            switch (key) {
+                case "startDate":
+                    listCell.setAttribute('align', tblHdrs[key].align);
+                    listCell.innerHTML = dater(record[key]);
+                    break;
+                case "dow":
+                    let dowNum = new Date(record.startDate).getDay();
+                    listCell.setAttribute('align', tblHdrs[key].align);
+                    listCell.innerHTML = daysOfWeek[dowNum];
+                    break;
+                case "nights":
+                case "adults":
+                    listCell.setAttribute('align', tblHdrs[key].align);
+                default:
+                    listCell.innerHTML = record[key];
+                    break;
             }
-            // close the row
-            newRow += "</tr>";
-            
-            // add the row to the table
-            newTable += newRow;
         }
     }
 
-    // }
-    // close the table
-    newTable += "</table>";
-    haTblDiv.innerHTML = newTable;
-
-    return displayCnt;
+    console.log("dispResList: listTable: ", listTable);
+    return displayCount;
 }

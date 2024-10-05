@@ -56,7 +56,7 @@ app.whenReady().then(() => {
     createWindow();
     window.once("ready-to-show", () => {
         window.show();
-        getHA_List();
+        // getHA_List();
         // getResList();
     });
 });
