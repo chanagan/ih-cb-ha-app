@@ -13,8 +13,8 @@ import { haClearDetails, showHaList, showVipList, clearInfoBlocks, clearHighligh
 // import { ipcRenderer } from "electron";
 
 // load up the HA data early
-showHaList();
-// showVipList();
+// showHaList();
+showVipList();
 
 navHA.addEventListener("click", showHaList);
 navVIP.addEventListener("click", showVipList);
