@@ -173,9 +173,12 @@ window.addEventListener("message", (event) => {
    * have a list of reservations from main=>preload=>renderer
    */
   if (event.data.type === "resData") {
-    // console.log('renderer: ', event.data.data);
     resList = event.data.data;
-    displayReservations(resList);
+    let vipGuests = getVipList(resList);
+    console.log('renderer: vipGuests ', vipGuests);
+
+
+    // displayReservations(resList);
     // return
   }
 

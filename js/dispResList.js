@@ -59,7 +59,7 @@ export function getVipList(data) {
 
     // if no data returned, display message and return
     if (rowCnt === 0) {
-        haTblDiv.innerHTML = "<b>No Reservations</b>";
+        resListDiv.innerHTML = "<b>No Reservations</b>";
         return 0;
     }
     // console.log("dispResList: data: ", rowCnt, " : ", data);
