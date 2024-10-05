@@ -1,6 +1,6 @@
 // import { api } from "./preload.js";
 
-import { dispResList } from "./js/dispResList.js";
+import { getVipList } from "./js/dispResList.js";
 import { dispResDetail } from "./js/dispResDetail.js";
 import { dispHaList } from "./js/dispHaList.js";
 import { dispHaDetail } from "./js/dispHaDetail.js";
@@ -106,57 +106,61 @@ const displayReservations = (data) => {
   // now let's see how many VIP reservations there are
   let vipGuests = [];
   let record
-  for (let i = 0; i < rowCnt; i++) {
-    record = data[i];
-    let sDate = new Date(record.startDate);
-    let eDate = new Date(record.endDate);
-    let diffTime = Math.abs(eDate - sDate);
-    let diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-    record.nights = diffDays;
-    if (record.nights > 5) {
-      vipGuests.push(record);
-    }
+  // for (let i = 0; i < rowCnt; i++) {
+  //   record = data[i];
+  //   let sDate = new Date(record.startDate);
+  //   let eDate = new Date(record.endDate);
+  //   let diffTime = Math.abs(eDate - sDate);
+  //   let diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+  //   record.nights = diffDays;
+  //   if (record.nights > 5) {
+  //     vipGuests.push(record);
+  //   }
 
-  }
-  console.log("displayReservations: data: ", rowCnt, " : ", vipGuests);
+  
+  // console.log("displayReservations: data: ", rowCnt, " : ", vipGuests);
 
 
-  console.log("displayReservations: data: ", rowCnt, " : ", data);
+  // console.log("displayReservations: data: ", rowCnt, " : ", data);
 
   // go show results of the guest search
-  rowCnt = dispResList(resList);
-  // console.log('rowCnt: ', rowCnt);
+  vipGuests = getVipList(resList);
+  console.log('renderer: vipGuests ', vipGuests);
 
-  let cntRes = document.getElementById("cntRes");
-  cntRes.innerHTML = "Number of reservations found: <b>" + rowCnt + "</>";
+  return  
+}
+
+  // let cntRes = document.getElementById("cntRes");
+  // cntRes.innerHTML = "Number of reservations found: <b>" + rowCnt + "</>";
 
   // return
 
-  if (rowCnt > 0) {
-    let listTbl = document.getElementById("listTbl");
+  // if (rowCnt > 0) {
+  //   let listTbl = document.getElementById("listTbl");
 
-    // this will fire when the table is clicked
-    listTbl.addEventListener("click", (e) => {
-      // clearSelections();
-      clearHighlight();
-      let thisTR = e.target.parentNode;
+  //   // this will fire when the table is clicked
+  //   listTbl.addEventListener("click", (e) => {
+  //     // clearSelections();
+  //     clearHighlight();
+  //     let thisTR = e.target.parentNode;
 
-      let reservationID = thisTR.getAttribute("data-resID");
-      thisTR.classList.add("table-active");
+  //     let reservationID = thisTR.getAttribute("data-resID");
+  //     thisTR.classList.add("table-active");
 
-      // let col = e.target.cellIndex;
-      let dispSelName = document.getElementById("dispSelName");
-      let row = e.target.parentNode.rowIndex;
-      let selName = listTbl.rows[row].cells[1].innerHTML;
-      dispSelName.innerHTML = selName;
+  //     // let col = e.target.cellIndex;
+  //     let dispSelName = document.getElementById("dispSelName");
+  //     let row = e.target.parentNode.rowIndex;
+  //     let selName = listTbl.rows[row].cells[1].innerHTML;
+  //     dispSelName.innerHTML = selName;
 
-      console.log("row: ", row, "  cellData: ", reservationID);
+  //     console.log("row: ", row, "  cellData: ", reservationID);
 
-      api.send('getResDetail', reservationID);
-    });
-  }
-  return rowCnt;
-}
+  //     api.send('getResDetail', reservationID);
+  //   });
+  // }
+  // return rowCnt;
+
+
 let rowCnt = 0;
 
 /*

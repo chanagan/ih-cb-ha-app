@@ -27,6 +27,14 @@ const computeNights = (startDate, endDate) => {
     let diffDays = Math.ceil(timeDiff / (1000 * 3600 * 24));
     return diffDays
 }
+
+
+ 
+const computeDow = (startDate) => {
+    let start = new Date(startDate).getDay();
+    return daysOfWeek[start];
+}
+
 /**
  * let jData = [
   { name: "GeeksforGeeks", est: 2009 },
@@ -43,8 +51,9 @@ console.log(jData);
  * @returns rowCnt
  */
 
-export function dispResList(data) {
+export function getVipList(data) {
     let record
+    let vipGuests = [];
     let rowCnt = data.length;
 
 
@@ -57,13 +66,24 @@ export function dispResList(data) {
 
     // sort the data by startDate
     data.sort((a, b) => (a.startDate > b.startDate ? 1 : -1));
-    console.log("dispResList: data: ", rowCnt, " : ", data);
+    // console.log("dispResList: data: ", rowCnt, " : ", data);
 
     // compute the number of nights
     for (let i = 0; i < rowCnt; i++) {
         record = data[i];
         record.nights = computeNights(record.startDate, record.endDate)
+        if (record.nights < vipDays) {
+            continue
+        }
+        let vipRecord = {};
+        record.dow = computeDow(record.startDate)
+        for (let key in tblHdrs) {
+            vipRecord[key] = record[key];
+        }
+        vipGuests.push(vipRecord);
     }
+
+    return vipGuests;
 
     let listTable, listHead, listBody;
     let listRow, listCell;
@@ -72,7 +92,7 @@ export function dispResList(data) {
     // let's make a new table
     listTable = document.createElement("table");
     listTable.id = "listTbl";
-    listTable.className = "table table-sm table-hover";
+    listTable.className = "table table-sm table-hover";df
     resListDiv.appendChild(listTable);
 
     // now need to create the table parts
