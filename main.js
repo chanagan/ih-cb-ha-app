@@ -22,6 +22,29 @@ const winX = cbConfig.winX;
 const winY = cbConfig.winY;
 const openDevTools = cbConfig.devTools;
 
+const daysOfWeek = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
+const vipDays = 6
+
+let reservHdrs = []
+reservHdrs["reservationID"] = true
+reservHdrs["guestName"] = true
+reservHdrs["nights"] = true
+reservHdrs["startDate"] = true
+reservHdrs["endDate"] = true
+reservHdrs["adults"] = true
+reservHdrs["dow"] = true
+
+const computeNights = (startDate, endDate) => {
+    let start = new Date(startDate);
+    let end = new Date(endDate);
+    let timeDiff = Math.abs(end.getTime() - start.getTime());
+    let diffDays = Math.ceil(timeDiff / (1000 * 3600 * 24));
+    return diffDays
+}
+const computeDow = (startDate) => {
+    let start = new Date(startDate).getDay();
+    return daysOfWeek[start];
+}
 
 let window;
 
@@ -76,6 +99,7 @@ const cbOptions = cbConfig.cbOptions;
 const cbApiHA_Details = "getHouseAccountDetails?";
 const cbApiHA_List = "getHouseAccountList?";
 const cbApiGetReservations = "getReservations?";
+const cbApiGetReservation = "getReservation?";
 // const cbApiCall = 'getDashboard'
 
 const getHA_List = () => {
@@ -104,7 +128,7 @@ ipcMain.on("haLoad", async () => {
 })
 
 // function getResList() {
-ipcMain.on("resList", async (event, data) => {
+ipcMain.on("getVipResList", async (event, data) => {
     let dtFrom = data.resDateFrom;
     let dtTo = data.resDateTo;
     let params = new URLSearchParams({
@@ -115,36 +139,65 @@ ipcMain.on("resList", async (event, data) => {
         checkInTo: dtTo,
         // pageNumber: 1,
     });
-    fetch(cbServer + 'getReservations?' + params, cbOptions)
+    fetch(cbServer + cbApiGetReservations + params, cbOptions)
         .then(res => res.json())
         .then((data) => {
             // console.log("main: getResList: ", data);
+            let vipResRecordsList = [];
             resData = data.data;
-            window.webContents.send("resData", resData); // send to preload
+            for (let i = 0; i < resData.length; i++) {
+                if (resData[i].status == 'canceled') {
+                    continue
+                }
+                let resNights = computeNights(resData[i].startDate, resData[i].endDate);
+                if (resNights < vipDays) {
+                    continue
+                }
+                resData[i].nights = resNights;
+                resData[i].dow = computeDow(resData[i].startDate);
+                let tmpRecord = {}
+                for (let key in reservHdrs) {
+                    tmpRecord[key] = resData[i][key];
+                }
+                vipResRecordsList.push(tmpRecord);
+                // vipResRecordsList.push(resData[i]);
+            }
+            // data.sort((a, b) => (a.startDate > b.startDate ? 1 : -1));
+            vipResRecordsList.sort((a, b) => (a.startDate > b.startDate ? 1 : -1));
+            console.log("main: vipResRecordsList: ", vipResRecordsList);
+            window.webContents.send("resData", vipResRecordsList); // send to preload
         });
 }
     // console.log('main: resList: ', resData)
     // window.webContents.send("resData", resData); // send to preload
 );
 
-ipcMain.on('getResDetail',  (event, resID) => {
+ipcMain.on('getResDetail', (event, vipRecord) => {
     // console.log('main: getResDetail: resID: ', resID)
     let params = new URLSearchParams({
         propertyID: cbPropertyID,
-        reservationID: resID,
+        reservationID: vipRecord.reservationID,
     });
-    fetch(cbServer + 'getReservation?' + params, cbOptions)
+    fetch(cbServer + cbApiGetReservation + params, cbOptions)
         .then(res => res.json())
         .then((data) => {
+            // console.log("main: getResDetail -vip-pre: ", vipRecord);
             // console.log("main: getResDetail: data: ", data);
             resData = data.data;
-            window.webContents.send("gotResDetail", data);
+            vipRecord.guestList = resData.guestList;
+            vipRecord.isMainGuest = resData.isMainGuest;
+            vipRecord.assignedRoom = resData.assignedRoom;
+            vipRecord.guestStatus = resData.guestStatus;
+            vipRecord.rooms = resData.rooms;
+            // console.log("main: getResDetail -vip-post: ", vipRecord);
+
+            window.webContents.send("gotResDetail", vipRecord);
         });
 })
 
 // cbApiHA_Details
 
-ipcMain.on('getHaDetail',  (event, keyID) => {
+ipcMain.on('getHaDetail', (event, keyID) => {
     // console.log('ipcMain main: getHAdtl: ', keyID)
     let params = new URLSearchParams({
         propertyID: cbPropertyID,
@@ -162,7 +215,7 @@ ipcMain.on('getHaDetail',  (event, keyID) => {
         });
 })
 
-ipcMain.on('getHaBalance',  (event, record) => {
+ipcMain.on('getHaBalance', (event, record) => {
     let keyID = record.accountID;
     console.log('ipcMain main: getHaBalance: ', keyID)
     let params = new URLSearchParams({
