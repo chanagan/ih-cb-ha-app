@@ -9,7 +9,7 @@ tblHdrs["isMainGuest"] = "Main?";
 tblHdrs["assignedRoom"] = "Assgnd?";
 // tblHdrs["roomName"] = "Room";
 tblHdrs["guestStatus"] = "Status";
-tblHdrs["rooms"] = "Rooms";
+tblHdrs["roomName"] = "Room";
 // tblHdrs['isPrivate'] = 'Private?'
 
 let statusHdrs = {'checked_in': 'Chk/In'

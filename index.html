@@ -94,11 +94,11 @@
                             <label>Filter</label>
                         </div>
                         <div class="col d-flex justify-content-left align-items-center">
-                            <input type="checkbox" name="Open" id="chkFilterEmp" >
+                            <input type="checkbox" name="Open" id="chkFilterEmp">
                             <label for="chkFilterEmp">Employee</label>
                         </div>
                         <div class="col d-flex justify-content-left align-items-center">
-                            <input type="checkbox" name="CLosed" id="chkFilterGc" >
+                            <input type="checkbox" name="CLosed" id="chkFilterGc">
                             <label for="chkStatClsd">Gift Card</label>
                         </div>
 
@@ -161,28 +161,21 @@
                       -->
                     <input type="date" id="resDateFrom" style="padding-right: 5px;" />
                     <input type="date" id="resDateTo" style="padding-right: 5px;" />
-                    <button type="button" class="btn btn-primary" id="btnDateSearch">Search</button>
+                    <button type="button" class="btn btn-sm btn-primary" id="btnDateSearch">Search</button>
                 </div>
                 <div class="col border-bottom border-5 d-flex justify-content-center align-items-center">
                     <span id="cntRes"></span>
                 </div>
             </div>
-            <div class="col border-bottom border-5 d-flex justify-content-center align-items-center">
+            <!-- <div class="col border-bottom border-5 d-flex justify-content-center align-items-center">
                 Selected Guest: &nbsp;
                 <span id="dispSelName" style="font-weight: bold;" class="gstDisp"></span>
-            </div>
+            </div> -->
         </div>
 
         <!-- reservation list and details   -->
-        <div class="container mb-3 scrollable">
-            <div class="row">
-                <div class="col  border-bottom border-5 d-flex  align-items-top">
-                    <div id="resListDiv" class="list scrollable gstDisp "></div>
-                </div>
-                <div class="col  border-bottom border-5 d-flex  align-items-top">
-                    <div id="resDtlDiv" class="expand scrollable gstDisp"></div>
-                </div>
-            </div>
+        <div class="row m-1 scrollable">
+            <div id="resListDiv" class="list scrollable gstDisp "></div>
         </div>
     </div>
 

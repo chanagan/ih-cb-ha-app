@@ -1,6 +1,6 @@
 // import { api } from "./preload.js";
 
-import { dispResList } from "./js/dispResList.js";
+import { getVipList, dispVipList } from "./js/dispResList.js";
 import { dispResDetail } from "./js/dispResDetail.js";
 import { dispHaList } from "./js/dispHaList.js";
 import { dispHaDetail } from "./js/dispHaDetail.js";
@@ -12,12 +12,22 @@ import { haClearDetails, showHaList, showVipList, clearInfoBlocks, clearHighligh
   from "./js/utility.js";
 // import { ipcRenderer } from "electron";
 
-// load up the HA data early
-// showHaList();
-showVipList();
+/**
+ * Initialise the UI
+ */
+// showHaList(); // set initial state to show HA
+showVipList(); // set initial state to show VIP
 
+/**
+ * set the NAV button handlers
+ */
 navHA.addEventListener("click", showHaList);
 navVIP.addEventListener("click", showVipList);
+
+/**
+ * set handlers for various buttons and filters
+ */
+// House Accounts (HA)
 btnHaNmSearch.addEventListener("click", () => {
   dispHaList(ha_accts);
 })
@@ -39,7 +49,6 @@ btnHaReload.addEventListener("click", () => {
 
 let ha_accts = {};
 let ha_details = {};
-let resList = {};
 
 
 let reservationList;
@@ -48,7 +57,7 @@ let later = today + 5
 
 
 /*
- * Clicked on the search button
+ * Clicked on the VIP search button
  */
 btnDateSearch.addEventListener("click", () => {
   let resDateFrom = document.getElementById("resDateFrom").value;
@@ -56,7 +65,7 @@ btnDateSearch.addEventListener("click", () => {
   // let srchID = 'all'
   clearInfoBlocks();
 
-  api.send("resList", { resDateFrom, resDateTo }); // send to main
+  api.send("getVipResList", { resDateFrom, resDateTo }); // send to main
 });
 
 const haNameCol = 1;
@@ -86,82 +95,16 @@ haDtlDivRecords.addEventListener("click", (e) => {
 
 })
 
-// haRecordsTbody.addEventListener('mouseover', (e) => {
-//   let thisTR = e.target.parentNode;
-//   document.getElementById("haDtlDivDesc").innerHTML = thisTR.getAttribute("data-desc");
-//   document.getElementById("haDtlDivNotes").innerHTML = thisTR.getAttribute("data-note");
-// })
-
-const displayReservations = (data) => {
-  clearSelections();
-
-  // need some preprocessing for the data
-  let rowCnt = data.length;
-  // if there were no reservations, return
-  if (rowCnt === 0) {
-    resListDiv.innerHTML = "<b>No Reservations</b>";
-    return
-  }
-
-  // now let's see how many VIP reservations there are
-  let vipGuests = [];
-  let record
-  for (let i = 0; i < rowCnt; i++) {
-    record = data[i];
-    let sDate = new Date(record.startDate);
-    let eDate = new Date(record.endDate);
-    let diffTime = Math.abs(eDate - sDate);
-    let diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-    record.nights = diffDays;
-    if (record.nights > 5) {
-      vipGuests.push(record);
-    }
-
-  }
-  console.log("displayReservations: data: ", rowCnt, " : ", vipGuests);
 
 
-  console.log("displayReservations: data: ", rowCnt, " : ", data);
 
-  // go show results of the guest search
-  rowCnt = dispResList(resList);
-  // console.log('rowCnt: ', rowCnt);
-
-  let cntRes = document.getElementById("cntRes");
-  cntRes.innerHTML = "Number of reservations found: <b>" + rowCnt + "</>";
-
-  // return
-
-  if (rowCnt > 0) {
-    let listTbl = document.getElementById("listTbl");
-
-    // this will fire when the table is clicked
-    listTbl.addEventListener("click", (e) => {
-      // clearSelections();
-      clearHighlight();
-      let thisTR = e.target.parentNode;
-
-      let reservationID = thisTR.getAttribute("data-resID");
-      thisTR.classList.add("table-active");
-
-      // let col = e.target.cellIndex;
-      let dispSelName = document.getElementById("dispSelName");
-      let row = e.target.parentNode.rowIndex;
-      let selName = listTbl.rows[row].cells[1].innerHTML;
-      dispSelName.innerHTML = selName;
-
-      console.log("row: ", row, "  cellData: ", reservationID);
-
-      api.send('getResDetail', reservationID);
-    });
-  }
-  return rowCnt;
-}
-let rowCnt = 0;
+// let rowCnt = 0;
 
 /*
  * get the search results back from preload.js
  */
+
+let showRecords = [];
 
 window.addEventListener("message", (event) => {
 
@@ -169,27 +112,79 @@ window.addEventListener("message", (event) => {
    * have a list of reservations from main=>preload=>renderer
    */
   if (event.data.type === "resData") {
-    // console.log('renderer: ', event.data.data);
-    resList = event.data.data;
-    displayReservations(resList);
-    // return
+    showRecords = [];
+    let resList = event.data.data;
+    // let vipGuests = getVipList(resList);
+    let vipGuests = resList;
+
+    let rowCnt = vipGuests.length;
+    let intMilSec = 250;
+    let anInterval = 1000 / intMilSec;
+    let rowsPerInterval = rowCnt / anInterval
+    let rowInterv = 100 / rowsPerInterval;
+
+    console.log(`renderer: vipGuests ${rowCnt} : ${rowsPerInterval}`)
+    let nIntervalId;
+
+    let progBar = document.createElement('div');
+    resListDiv.appendChild(progBar)
+
+    progBar.className = 'progress';
+    progBar.role = 'progressbar';
+    progBar.ariaLabel = 'Basic example';
+    progBar.ariaValuenow = '75';
+    progBar.ariaValuemin = '0';
+    progBar.ariaValuemax = '100';
+
+    // <div class="progress" role="progressbar" aria-label="Basic example" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100">
+    let progBarInner = document.createElement('div');
+    progBar.appendChild(progBarInner);
+    progBarInner.className = 'progress-bar progress-bar-striped progress-bar-animated';
+    progBarInner.style.width = '0%';
+    // </div>
+
+    let rowProgress = 0;
+
+    for (let i = 0; i < rowCnt; i++) {
+      if (!nIntervalId)
+        nIntervalId = setInterval(function () {
+          if (i < rowCnt) {
+            if (i > rowProgress) {
+              rowProgress += rowInterv
+              progBarInner.style.width = `${rowProgress}%`;
+            }
+              // let keyID = vipGuests[i].reservationID;
+            // showRecords.push(vipGuests[i]);
+            // api.send("getResDetail", showRecords[i])
+            api.send("getResDetail", vipGuests[i])
+            i++
+          } else {
+            progBar.remove();
+            console.log('end of vipGuests: ', showRecords);
+            clearInterval(nIntervalId);
+            dispVipList(showRecords);
+          }
+        }, 250);
+    }
+    console.log('render: resData: end');
   }
 
   /** 
    * got the reservation detail from main=>preload=>renderer
    */
   if (event.data.type === "gotResDetail") {
-    console.log('renderer: ', event.data.data);
     let resData = event.data.data;
-    dispResDetail(resData);
+    showRecords.push(resData);
+    // console.log('renderer: ', event.data.data);
+    // dispResDetail(resData);
   }
 
-  let showRecords = []
+
   if (event.data.type === "HA_Data") {
     // console.log('renderer: ', event.data.data);
     ha_accts = event.data.data;
     // rowCnt = dispHaList(ha_accts);
-    showRecords = dispHaList(ha_accts);
+    let showRecords = dispHaList(ha_accts);
     haGetBalances(showRecords);
   }
 

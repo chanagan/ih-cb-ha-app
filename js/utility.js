@@ -82,6 +82,7 @@ export function clearSelections() {
     clearInfoBlocks();
 }
 
+
 export function showVipList() {
     console.log("showVipList");
     document.getElementById("navHA").classList.remove("active");
