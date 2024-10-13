@@ -1,4 +1,4 @@
-.config.json
+config.json
 # database
 db
 .DS_Store
