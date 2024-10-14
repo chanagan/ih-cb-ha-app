@@ -2,6 +2,8 @@ const { app, BrowserWindow, ipcMain } = require("electron");
 const fetch = require("electron-fetch").default;
 const nodeFs = require("fs");
 
+const {log} = require("./js/haMainFuncs");
+
 const path = require("path");
 // // const sqlite3 = require("sqlite3").verbose();
 // // const db = new sqlite3.Database("./db/rm-test.db");
@@ -14,7 +16,7 @@ const path = require("path");
 let ha_accts;  // this is the global variable for the house accounts
 let resWindow, resData;
 
-const cbConfig = JSON.parse(nodeFs.readFileSync('./.config.json', 'utf-8'));
+const cbConfig = JSON.parse(nodeFs.readFileSync('./config.json', 'utf-8'));
 
 const winWidth = cbConfig.winWidth;
 const winHeight = cbConfig.winHeight;
@@ -79,7 +81,7 @@ app.whenReady().then(() => {
     createWindow();
     window.once("ready-to-show", () => {
         window.show();
-        // getHA_List();
+        getHA_List();
         // getResList();
     });
 });
@@ -116,6 +118,7 @@ const getHA_List = () => {
             // console.log("main: getHA_List: ", data);
             // console.log("main: getHA_List: ");
             let haData = data.data;
+            log("main: getHA_List:");
             window.webContents.send("HA_Data", haData); // send to preload
         })
         .catch(err => console.error(err))
