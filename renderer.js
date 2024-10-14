@@ -15,8 +15,8 @@ import { haClearDetails, showHaList, showVipList, clearInfoBlocks, clearHighligh
 /**
  * Initialise the UI
  */
-// showHaList(); // set initial state to show HA
-showVipList(); // set initial state to show VIP
+showHaList(); // set initial state to show HA
+// showVipList(); // set initial state to show VIP
 
 /**
  * set the NAV button handlers
