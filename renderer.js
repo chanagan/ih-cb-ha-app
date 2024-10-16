@@ -29,25 +29,31 @@ navVIP.addEventListener("click", showVipList);
  */
 // House Accounts (HA)
 btnHaNmSearch.addEventListener("click", () => {
-  dispHaList(ha_accts);
+  // haListDiv.removeChild(haListTbl);
+  dispHaList(showAccounts);
 })
 chkStatOpn.addEventListener("click", () => {
-  dispHaList(ha_accts);
+  // haListDiv.removeChild(haListTbl);
+  dispHaList(showAccounts);
 })
 chkStatClsd.addEventListener("click", () => {
-  dispHaList(ha_accts);
+  // haListDiv.removeChild(haListTbl);
+  dispHaList(showAccounts);
 })
 chkFilterEmp.addEventListener("click", () => {
-  dispHaList(ha_accts);
+  // haListDiv.removeChild(haListTbl);
+  dispHaList(showAccounts);
 })
 chkFilterGc.addEventListener("click", () => {
-  dispHaList(ha_accts);
+  // haListDiv.removeChild(haListTbl);
+  dispHaList(showAccounts);
 })
 btnHaReload.addEventListener("click", () => {
+  haListDiv.removeChild(haListTbl);
   api.send("haLoad");
 })
 
-let ha_accts = {};
+let haAccounts = {};
 let ha_details = {};
 
 
@@ -68,7 +74,7 @@ btnDateSearch.addEventListener("click", () => {
   api.send("getVipResList", { resDateFrom, resDateTo }); // send to main
 });
 
-const haNameCol = 1;
+const haNameCol = 0;
 
 haListDiv.addEventListener("click", (e) => {
   let dispElems = haListDiv.getElementsByClassName("table-active");
@@ -105,6 +111,7 @@ haDtlDivRecords.addEventListener("click", (e) => {
  */
 
 let showRecords = [];
+let showAccounts = [];
 
 window.addEventListener("message", (event) => {
 
@@ -181,13 +188,74 @@ window.addEventListener("message", (event) => {
 
 
   if (event.data.type === "HA_Data") {
+    showAccounts = [];
     // console.log('renderer: ', event.data.data);
-    ha_accts = event.data.data;
-    // rowCnt = dispHaList(ha_accts);
-    let showRecords = dispHaList(ha_accts);
-    haGetBalances(showRecords);
+    haAccounts = event.data.data;
+    // rowCnt = dispHaList(haAccounts);
+    // get the balance info for the records first
+
+    let rowCnt = haAccounts.length;
+    rowCnt = 30
+    let intMilSec = 250;
+    let anInterval = 1000 / intMilSec;
+    let rowsPerInterval = rowCnt / anInterval
+    let rowInterv = 100 / rowsPerInterval;
+
+    let nIntervalId;
+
+    // let progBar = document.createElement('div');
+    let progBar = document.createElement('progress');
+    // haListDiv.appendChild(progBar)
+    haProgDiv.appendChild(progBar)
+
+    progBar.id = 'progBar';
+    progBar.max = '100';
+    progBar.value = '0';
+
+    // progBar.className = 'progress';
+    // progBar.role = 'progressbar';
+    // progBar.ariaLabel = 'Basic example';
+    // progBar.ariaValuenow = '75';
+    // progBar.ariaValuemin = '0';
+    // progBar.ariaValuemax = '100';
+
+    // // <div class="progress" role="progressbar" aria-label="Basic example" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100">
+    // let progBarInner = document.createElement('div');
+    // progBar.appendChild(progBarInner);
+    // progBarInner.className = 'progress-bar progress-bar-striped progress-bar-animated';
+    // progBarInner.style.width = '0%';
+    // </div>
+
+    let rowProgress = 0;  
+
+      for (let i = 0; i < rowCnt; i++) {
+        if (!nIntervalId)
+        nIntervalId = setInterval(function () {
+          if (i < rowCnt) {
+            console.log(`count: ${i}`)
+            progBar.value = i * 100 / rowCnt
+            api.send("getHaBalance", haAccounts[i])
+            i++
+          } else {
+            progBar.remove();
+            console.log('end of haAccounts: ', showAccounts);
+            clearInterval(nIntervalId);
+            dispHaList(showAccounts);
+          }
+        }, 250);
+    }
+    // let record = haAccounts[0]
+
+    // haGetBalances(showRecords);
+
+    // let showRecords = dispHaList(haAccounts);
   }
 
+  if (event.data.type === "gotHaBalance") {
+    let accountData = event.data.data;
+    showAccounts.push(accountData);
+
+  }
   if (event.data.type === "gotHaDetail") {
     // console.log('renderer: ');
     let haData = event.data.data;

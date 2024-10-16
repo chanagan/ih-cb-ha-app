@@ -2,7 +2,7 @@ const { app, BrowserWindow, ipcMain } = require("electron");
 const fetch = require("electron-fetch").default;
 const nodeFs = require("fs");
 
-const {log} = require("./js/haMainFuncs");
+const { getHA_List, computeCharges, log } = require("./js/haMainFuncs");
 
 const path = require("path");
 // // const sqlite3 = require("sqlite3").verbose();
@@ -14,7 +14,7 @@ const path = require("path");
 // import { ha_accts } from "./data_sets/ha_accts";    
 
 let ha_accts;  // this is the global variable for the house accounts
-let resWindow, resData;
+let resWindow, resData, haData;
 
 const cbConfig = JSON.parse(nodeFs.readFileSync('./config.json', 'utf-8'));
 
@@ -81,7 +81,7 @@ app.whenReady().then(() => {
     createWindow();
     window.once("ready-to-show", () => {
         window.show();
-        getHA_List();
+        getHA_List(window);
         // getResList();
     });
 });
@@ -104,30 +104,29 @@ const cbApiGetReservations = "getReservations?";
 const cbApiGetReservation = "getReservation?";
 // const cbApiCall = 'getDashboard'
 
-const getHA_List = () => {
-    let params = new URLSearchParams({
-        propertyID: cbPropertyID,
-        accountStatus: "open",
-        // checkInFrom: "2024-08-23",
-        // checkInTo: "2024-08-31",
-        // pageNumber: 1,
-    });
-    fetch(cbServer + cbApiHA_List + params, cbOptions)
-        .then(res => res.json())
-        .then((data) => {
-            // console.log("main: getHA_List: ", data);
-            // console.log("main: getHA_List: ");
-            let haData = data.data;
-            log("main: getHA_List:");
-            window.webContents.send("HA_Data", haData); // send to preload
-        })
-        .catch(err => console.error(err))
-        ;
-
-}
+// const getHA_List = () => {
+//     let params = new URLSearchParams({
+//         propertyID: cbPropertyID,
+//         accountStatus: "open",
+//         // checkInFrom: "2024-08-23",
+//         // checkInTo: "2024-08-31",
+//         // pageNumber: 1,
+//     });
+//     fetch(cbServer + cbApiHA_List + params, cbOptions)
+//         .then(res => res.json())
+//         .then((data) => {
+//             // console.log("main: getHA_List: ", data);
+//             // console.log("main: getHA_List: ");
+//             let haData = data.data;
+//             log("main: getHA_List:");
+//             window.webContents.send("HA_Data", haData); // send to preload
+//         })
+//         .catch(err => console.error(err))
+//         ;
+// }
 // user asked for a reload of the HA data
 ipcMain.on("haLoad", async () => {
-    getHA_List();
+    getHA_List(window);
 })
 
 // function getResList() {
@@ -167,7 +166,7 @@ ipcMain.on("getVipResList", async (event, data) => {
             }
             // data.sort((a, b) => (a.startDate > b.startDate ? 1 : -1));
             vipResRecordsList.sort((a, b) => (a.startDate > b.startDate ? 1 : -1));
-            console.log("main: vipResRecordsList: ", vipResRecordsList);
+            // console.log("main: vipResRecordsList: ", vipResRecordsList);
             window.webContents.send("resData", vipResRecordsList); // send to preload
         });
 }
@@ -220,7 +219,7 @@ ipcMain.on('getHaDetail', (event, keyID) => {
 
 ipcMain.on('getHaBalance', (event, record) => {
     let keyID = record.accountID;
-    console.log('ipcMain main: getHaBalance: ', keyID)
+    // console.log('ipcMain main: getHaBalance: ', keyID)
     let params = new URLSearchParams({
         propertyID: cbPropertyID,
         houseAccountID: keyID,
@@ -230,14 +229,23 @@ ipcMain.on('getHaBalance', (event, record) => {
     fetch(cbServer + cbApiHA_Details + params, cbOptions)
         .then(res => res.json())
         .then((data) => {
-            console.log('keyID: ', keyID, ' record: ', record)
-            console.log("main: getHaBalance: data: ", data);
-            resData = data.data;
-            let credit = resData.total.credit.slice(4)
-            let debit = resData.total.debit.slice(4)
-            let balance = credit - debit
+            // console.log('keyID: ', keyID, ' record: ', record)
+            // console.log("main: getHaBalance: data: ", data);
+            haData = data.data;
+            // let credit = resData.total.credit.slice(4).replaceAll(',', '')
+            // let debit = resData.total.debit.slice(4).replaceAll(',', '')
+            // let balance = credit - debit
+            // record.balance = balance
+            let charges = computeCharges(record.accountName, haData)
+            record.charges = charges
             console.log(`credit: ${credit} - debit: ${debit} = balance: ${balance}`) // console.log('credit: ', credit) 
             // return resData
-            // window.webContents.send("gotHaDetail", resData);
-        });
+            window.webContents.send("gotHaBalance", record);
+        })
+        .catch(err => {
+            console.log(`main: getHaBalance: ${record} error: ${err}`) // console.log(err)
+            window.webContents.send("gotHaBalance", record);
+            console.error(err)
+        })
+        ;
 })
