@@ -1,5 +1,5 @@
 
-import { dater, formatter, haShowDetailNotes } from "./utility.js";
+import { formatter, haShowDetailNotes } from "./utility.js";
 
 let tblTotalHdrs = {};
 tblTotalHdrs['count'] = 'Count';
@@ -13,12 +13,6 @@ tblRecordHdrs["transactionDateTime"] = "Trans Date";
 tblRecordHdrs["credit"] = "Charge";
 tblRecordHdrs["debit"] = "Payment";
 tblRecordHdrs["balance"] = "Balance";
-// tblRecordHdrs["description"] = "Description";
-// tblRecordHdrs["notes"] = "Notes";
-// tblRecordHdrs["quantity"] = "Quantity";
-// tblRecordHdrs["info"] = "?";
-// tblRecordHdrs["info"] = '<i class="bi bi-info-square"></i>';
-tblRecordHdrs["userName"] = "userName";
 
 let statusHdrs = {
     'checked_in': 'Chk/In'
@@ -77,40 +71,13 @@ export function dispHaDetail(data) {
     records.sort((a, b) => (a.transactionDateTime < b.transactionDateTime ? 1 : -1));
     // console.log('records: ', records);
 
-
-
-    // will be putting the results into a table
-    // newTable = "<table border='0' id='haTotalTbl' class='table table-sm table-hover'>";
-
-
-    // // headers for the 'total' table
-    // newRow = "<tr>";
-    // for (let key1 in tblTotalHdrs) {
-    //     newRow += "<th>" + tblTotalHdrs[key1] + "</th>";
-    // }
-    // newRow += "</tr>";
-    // newTable += newRow;
-
-    // // detail for the 'total' table
-    // newRow = "<tr>";
-    // for (let key1 in tblTotalHdrs) {
-    //     newRow += "<td>" + total[key1] + "</td>";
-    // }
-    // newRow += "</tr>";
-    // newTable += newRow;
-
-    // newTable += "</table>";
-    // haDtlDivTotal.innerHTML = newTable;
-
     let tdAlign = ''
 
     newTable = "<table border='0' id='haRecordsTbl' class='table table-hover table-sm'>";
     newTable += "<thead>";
     // headers for the 'records' table
     newRow = "<tr>";
-    // for (let key1 in tblRecordHdrs) {
-    //     newRow += "<th>" + tblRecordHdrs[key1] + "</th>";
-    // }
+
     for (let fldKey in tblRecordHdrs) {
         switch (fldKey) {
             case "credit":
@@ -182,21 +149,9 @@ export function dispHaDetail(data) {
     
     haRecordsTbody.addEventListener('mouseover', (e) => {
         haShowDetailNotes(e)
-        // let thisTR = e.target.parentNode;
-        // document.getElementById("haDtlDivDesc").innerHTML = thisTR.getAttribute("data-desc");
-        // document.getElementById("haDtlDivNotes").innerHTML = thisTR.getAttribute("data-note");
       })
-      
-
     return
 
-    /**
-<a href="#" class="tip">
-   <img src="http://www.w3schools.com/html/pic_mountain.jpg">
-   <span>This is the CSS tooltip showing up when you mouse over the link</span>
-</a>
-    * 
-     */
 
     let rooms
     for (let key in guestList) {

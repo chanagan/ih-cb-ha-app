@@ -18,6 +18,11 @@ ipcRenderer.on('HA_Data', (event, data) => {
     window.postMessage({type: 'HA_Data', data: data}) // send to renderer
 })
 
+ipcRenderer.on('gotHaBalance', (event, data) => {
+    // console.log('preload gotHaDetail: ', data )
+    window.postMessage({type: 'gotHaBalance', data: data}) // send to renderer
+})
+
 ipcRenderer.on('gotHaDetail', (event, data) => {
     // console.log('preload gotHaDetail: ', data )
     window.postMessage({type: 'gotHaDetail', data: data}) // send to renderer
