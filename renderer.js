@@ -207,6 +207,8 @@ window.addEventListener("message", (event) => {
     let progBar = document.createElement('progress');
     // haListDiv.appendChild(progBar)
     haProgDiv.appendChild(progBar)
+    let progCnt = document.createElement('span');
+    haProgDiv.appendChild(progCnt);
 
     progBar.id = 'progBar';
     progBar.max = '100';
@@ -232,11 +234,13 @@ window.addEventListener("message", (event) => {
         if (!nIntervalId)
         nIntervalId = setInterval(function () {
           if (i < rowCnt) {
-            console.log(`count: ${i}`)
+            // console.log(`count: ${i}`)
             progBar.value = i * 100 / rowCnt
+            progCnt.innerHTML = ` ${i} of ${rowCnt}`
             api.send("getHaBalance", haAccounts[i])
             i++
           } else {
+            progCnt.remove();
             progBar.remove();
             console.log('end of haAccounts: ', showAccounts);
             clearInterval(nIntervalId);
