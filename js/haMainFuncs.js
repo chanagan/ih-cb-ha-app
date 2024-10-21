@@ -1,5 +1,6 @@
-const fs = require('fs');
-const cbConfig = JSON.parse(fs.readFileSync('./config.json', 'utf-8'));
+// const fs = require('fs');
+const cbConfig = require('../config.json');
+// const cbConfig = JSON.parse(fs.readFileSync("../config.json", 'utf-8'));
 
 const cbPropertyID = cbConfig.cbPropertyID;
 const cbServer = cbConfig.cbServer;

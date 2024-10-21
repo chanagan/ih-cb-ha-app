@@ -1,6 +1,6 @@
 const { app, BrowserWindow, ipcMain } = require("electron");
 const fetch = require("electron-fetch").default;
-const nodeFs = require("fs");
+// const nodeFs = require("fs");
 
 const { getHA_List, computeCharges, log } = require("./js/haMainFuncs");
 
@@ -16,7 +16,8 @@ const path = require("path");
 let ha_accts;  // this is the global variable for the house accounts
 let resWindow, resData, haData;
 
-const cbConfig = JSON.parse(nodeFs.readFileSync('./config.json', 'utf-8'));
+const cbConfig = require('./config.json');
+// console.log("main: cbConfig: ", cbConfig);
 
 const winWidth = cbConfig.winWidth;
 const winHeight = cbConfig.winHeight;
