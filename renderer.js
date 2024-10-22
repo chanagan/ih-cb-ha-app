@@ -2,7 +2,7 @@
 
 import { getVipList, dispVipList } from "./js/dispResList.js";
 import { dispResDetail } from "./js/dispResDetail.js";
-import { dispHaList } from "./js/dispHaList.js";
+import { filterHaList, dispHaList } from "./js/haRenderFuncs.js";
 import { dispHaDetail } from "./js/dispHaDetail.js";
 
 import { haGetBalances } from "./js/haUtils.js";
@@ -190,12 +190,12 @@ window.addEventListener("message", (event) => {
   if (event.data.type === "HA_Data") {
     showAccounts = [];
     // console.log('renderer: ', event.data.data);
-    haAccounts = event.data.data;
+    haAccounts = filterHaList(event.data.data)
     // rowCnt = dispHaList(haAccounts);
     // get the balance info for the records first
 
     let rowCnt = haAccounts.length;
-    rowCnt = 30
+    rowCnt = 10
     let intMilSec = 250;
     let anInterval = 1000 / intMilSec;
     let rowsPerInterval = rowCnt / anInterval
@@ -213,20 +213,6 @@ window.addEventListener("message", (event) => {
     progBar.id = 'progBar';
     progBar.max = '100';
     progBar.value = '0';
-
-    // progBar.className = 'progress';
-    // progBar.role = 'progressbar';
-    // progBar.ariaLabel = 'Basic example';
-    // progBar.ariaValuenow = '75';
-    // progBar.ariaValuemin = '0';
-    // progBar.ariaValuemax = '100';
-
-    // // <div class="progress" role="progressbar" aria-label="Basic example" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100">
-    // let progBarInner = document.createElement('div');
-    // progBar.appendChild(progBarInner);
-    // progBarInner.className = 'progress-bar progress-bar-striped progress-bar-animated';
-    // progBarInner.style.width = '0%';
-    // </div>
 
     let rowProgress = 0;  
 
@@ -246,7 +232,7 @@ window.addEventListener("message", (event) => {
             clearInterval(nIntervalId);
             dispHaList(showAccounts);
           }
-        }, 250);
+        }, 400);
     }
     // let record = haAccounts[0]
 
