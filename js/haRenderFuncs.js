@@ -51,8 +51,8 @@ export function filterHaList(data) {
 
     let wantClosed = chkStatClsd.checked
     let wantOpen = chkStatOpn.checked
-    let wantEmp = chkFilterEmp.checked
-    let wantGC = chkFilterGc.checked
+    // let wantEmp = chkFilterEmp.checked
+    // let wantGC = chkFilterGc.checked
 
     let isEmp = false
     let isGC = false
@@ -72,12 +72,12 @@ export function filterHaList(data) {
             || (record.accountStatus === statOpen && !wantOpen)) { continue }
 
         // check for acct type filters
-        isGC = record.accountName.startsWith('GC')
-        isEmp = record.accountName.startsWith('IH')
-        if (wantEmp && !isEmp) { continue }
-        if (wantGC && !isGC) { continue }
-        if (isGC && !wantGC) { continue }
-        if (isEmp && !wantEmp) { continue }
+        // isGC = record.accountName.startsWith('GC')
+        // isEmp = record.accountName.startsWith('IH')
+        // if (wantEmp && !isEmp) { continue }
+        // if (wantGC && !isGC) { continue }
+        // if (isGC && !wantGC) { continue }
+        // if (isEmp && !wantEmp) { continue }
 
         // at this point we're going to show this record, so,
         // push it to the showRecords array
@@ -151,11 +151,11 @@ export function dispHaList(data) {
     // create table rows
     let wantClosed = chkStatClsd.checked
     let wantOpen = chkStatOpn.checked
-    let wantEmp = chkFilterEmp.checked
-    let wantGC = chkFilterGc.checked
+    // let wantEmp = chkFilterEmp.checked
+    // let wantGC = chkFilterGc.checked
 
-    let isEmp = false
-    let isGC = false
+    // let isEmp = false
+    // let isGC = false
 
     let showRecords = []
     let displayCount = 0
@@ -170,12 +170,12 @@ export function dispHaList(data) {
             || (record.accountStatus === statOpen && !wantOpen)) { continue }
 
         // check for acct type filters
-        isGC = record.accountName.startsWith('GC')
-        isEmp = record.accountName.startsWith('IH')
-        if (wantEmp && !isEmp) { continue }
-        if (wantGC && !isGC) { continue }
-        if (isGC && !wantGC) { continue }
-        if (isEmp && !wantEmp) { continue }
+        // isGC = record.accountName.startsWith('GC')
+        // isEmp = record.accountName.startsWith('IH')
+        // if (wantEmp && !isEmp) { continue }
+        // if (wantGC && !isGC) { continue }
+        // if (isGC && !wantGC) { continue }
+        // if (isEmp && !wantEmp) { continue }
 
         // at this point we're going to show this record, so,
         // push it to the showRecords array

@@ -40,14 +40,16 @@ chkStatClsd.addEventListener("click", () => {
   // haListDiv.removeChild(haListTbl);
   dispHaList(showAccounts);
 })
-chkFilterEmp.addEventListener("click", () => {
-  // haListDiv.removeChild(haListTbl);
-  dispHaList(showAccounts);
-})
-chkFilterGc.addEventListener("click", () => {
-  // haListDiv.removeChild(haListTbl);
-  dispHaList(showAccounts);
-})
+
+// chkFilterEmp.addEventListener("click", () => {
+//   // haListDiv.removeChild(haListTbl);
+//   dispHaList(showAccounts);
+// })
+// chkFilterGc.addEventListener("click", () => {
+//   // haListDiv.removeChild(haListTbl);
+//   dispHaList(showAccounts);
+// })
+
 btnHaReload.addEventListener("click", () => {
   haListDiv.removeChild(haListTbl);
   api.send("haLoad");
@@ -160,7 +162,7 @@ window.addEventListener("message", (event) => {
               rowProgress += rowInterv
               progBarInner.style.width = `${rowProgress}%`;
             }
-              // let keyID = vipGuests[i].reservationID;
+            // let keyID = vipGuests[i].reservationID;
             // showRecords.push(vipGuests[i]);
             // api.send("getResDetail", showRecords[i])
             api.send("getResDetail", vipGuests[i])
@@ -214,25 +216,26 @@ window.addEventListener("message", (event) => {
     progBar.max = '100';
     progBar.value = '0';
 
-    let rowProgress = 0;  
+    let rowProgress = 0;
 
-      for (let i = 0; i < rowCnt; i++) {
-        if (!nIntervalId)
-        nIntervalId = setInterval(function () {
-          if (i < rowCnt) {
-            // console.log(`count: ${i}`)
-            progBar.value = i * 100 / rowCnt
-            progCnt.innerHTML = ` ${i} of ${rowCnt}`
-            api.send("getHaBalance", haAccounts[i])
-            i++
-          } else {
-            progCnt.remove();
-            progBar.remove();
-            console.log('end of haAccounts: ', showAccounts);
-            clearInterval(nIntervalId);
-            dispHaList(showAccounts);
-          }
-        }, 400);
+    // for (let i = 0; i < rowCnt; i++) {
+    if (!nIntervalId) {
+      let i = 0;
+      nIntervalId = setInterval(function () {
+        if (i < rowCnt) {
+          // console.log(`count: ${i}`)
+          progBar.value = i * 100 / rowCnt
+          progCnt.innerHTML = ` ${i} of ${rowCnt}`
+          api.send("getHaBalance", haAccounts[i])
+          i++
+        } else {
+          progCnt.remove();
+          progBar.remove();
+          console.log('end of haAccounts: ', showAccounts);
+          clearInterval(nIntervalId);
+          dispHaList(showAccounts);
+        }
+      }, 300);
     }
     // let record = haAccounts[0]
 

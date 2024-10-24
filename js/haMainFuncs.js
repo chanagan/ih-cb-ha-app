@@ -45,6 +45,13 @@ const getHA_List = (window) => {
             let haAcctRecordsList = [];
             let haData = data.data;
             for (let i = 0; i < haData.length; i++) {
+                let dtRecord = haData[i];
+                // want only house accounts
+                let isGC = dtRecord.accountName.startsWith("GC")
+                let isEmp = dtRecord.accountName.startsWith("IH")
+                if (isGC || isEmp) {
+                    continue
+                }
                 let haRecord = {};
                 haRecord.accountID = haData[i].accountID;
                 haRecord.accountName = haData[i].accountName;
