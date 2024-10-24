@@ -22,15 +22,7 @@ chrgHdrs["totChg"] = { 'align': 'right', 'value': 'Total Charge' };
 
 // let daysOfWeek = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
 
-/**
- * let jData = [
-  { name: "GeeksforGeeks", est: 2009 },
-  { name: "Google", est: 1998 },
-  { name: "Microsoft", est: 1975 }
-];
-jData.sort((a, b) => (a.name > b.name ? 1 : -1));
-console.log(jData);
- */
+
 
 const txtHaNmSrch = document.getElementById("txtHaNmSrch");
 const haListDiv = document.getElementById("haListDiv");
@@ -45,6 +37,56 @@ const statClosed = 'closed';
  * @returns rowCnt
  */
 
+export function filterHaList(data) {
+    // filter the full list of accounts
+    let rowCnt = data.length;
+    // if no data returned, display message and return
+    if (rowCnt === 0) {
+        haListDiv.innerHTML = "<b>No Accounts</b>";
+        return 0;
+    }
+    // set up a search key if there is one
+    let srchKey = txtHaNmSrch.value
+    let lcSrchKey = srchKey.toLowerCase();
+
+    let wantClosed = chkStatClsd.checked
+    let wantOpen = chkStatOpn.checked
+    // let wantEmp = chkFilterEmp.checked
+    // let wantGC = chkFilterGc.checked
+
+    let isEmp = false
+    let isGC = false
+
+    let showRecords = []
+    let displayCount = 0
+    let record
+
+
+    for (let i = 0; i < rowCnt; i++) {
+        record = data[i];
+        if (!record.accountName.toLowerCase().includes(lcSrchKey)) {
+            continue
+        }
+        // check for status filters
+        if ((record.accountStatus === statClosed && !wantClosed)
+            || (record.accountStatus === statOpen && !wantOpen)) { continue }
+
+        // check for acct type filters
+        // isGC = record.accountName.startsWith('GC')
+        // isEmp = record.accountName.startsWith('IH')
+        // if (wantEmp && !isEmp) { continue }
+        // if (wantGC && !isGC) { continue }
+        // if (isGC && !wantGC) { continue }
+        // if (isEmp && !wantEmp) { continue }
+
+        // at this point we're going to show this record, so,
+        // push it to the showRecords array
+        showRecords.push(record)
+        displayCount += 1
+    }
+    console.log('filterHaList: displayCount: ', displayCount)
+    return showRecords
+}
 export function dispHaList(data) {
     let rowCnt = data.length;
     // if no data returned, display message and return
@@ -109,11 +151,11 @@ export function dispHaList(data) {
     // create table rows
     let wantClosed = chkStatClsd.checked
     let wantOpen = chkStatOpn.checked
-    let wantEmp = chkFilterEmp.checked
-    let wantGC = chkFilterGc.checked
+    // let wantEmp = chkFilterEmp.checked
+    // let wantGC = chkFilterGc.checked
 
-    let isEmp = false
-    let isGC = false
+    // let isEmp = false
+    // let isGC = false
 
     let showRecords = []
     let displayCount = 0
@@ -128,12 +170,12 @@ export function dispHaList(data) {
             || (record.accountStatus === statOpen && !wantOpen)) { continue }
 
         // check for acct type filters
-        isGC = record.accountName.startsWith('GC')
-        isEmp = record.accountName.startsWith('IH')
-        if (wantEmp && !isEmp) { continue }
-        if (wantGC && !isGC) { continue }
-        if (isGC && !wantGC) { continue }
-        if (isEmp && !wantEmp) { continue }
+        // isGC = record.accountName.startsWith('GC')
+        // isEmp = record.accountName.startsWith('IH')
+        // if (wantEmp && !isEmp) { continue }
+        // if (wantGC && !isGC) { continue }
+        // if (isGC && !wantGC) { continue }
+        // if (isEmp && !wantEmp) { continue }
 
         // at this point we're going to show this record, so,
         // push it to the showRecords array

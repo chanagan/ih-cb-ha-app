@@ -45,11 +45,19 @@ const getHA_List = (window) => {
             let haAcctRecordsList = [];
             let haData = data.data;
             for (let i = 0; i < haData.length; i++) {
-                haData[i].accountID = haData[i].accountID;
-                haData[i].accountName = haData[i].accountName;
-                haData[i].accountStatus = haData[i].accountStatus;
+                let dtRecord = haData[i];
+                // want only house accounts
+                let isGC = dtRecord.accountName.startsWith("GC")
+                let isEmp = dtRecord.accountName.startsWith("IH")
+                if (isGC || isEmp) {
+                    continue
+                }
+                let haRecord = {};
+                haRecord.accountID = haData[i].accountID;
+                haRecord.accountName = haData[i].accountName;
+                haRecord.accountStatus = haData[i].accountStatus;
 
-                haAcctRecordsList.push(haData[i]);
+                haAcctRecordsList.push(haRecord);
             }
             // log("main: getHA_List:");
             haAcctRecordsList.sort((a, b) => (a.accountName > b.accountName ? 1 : -1));
