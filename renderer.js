@@ -12,6 +12,7 @@ import { haClearDetails, showHaList, showVipList, clearInfoBlocks, clearHighligh
   from "./js/utility.js";
 // import { ipcRenderer } from "electron";
 
+
 /**
  * Initialise the UI
  */
@@ -31,6 +32,17 @@ navVIP.addEventListener("click", showVipList);
 btnHaNmSearch.addEventListener("click", () => {
   // haListDiv.removeChild(haListTbl);
   dispHaList(showAccounts);
+})
+btnHaListPrint.addEventListener("click", () => {
+  // haListDiv.removeChild(haListTbl);
+  alert("Print");
+  let win = window.open('about:blank', '_blank', 'top=500,left=200,frame=false,nodeIntegration=no')
+  let winBod   = win.document.body
+  console.log(win)  
+  winBod.innerHTML = haListTbl.outerHTML
+  win.focus();
+  win.print();
+  setTimeout(() => { win.close(); }, 1000);
 })
 chkStatOpn.addEventListener("click", () => {
   // haListDiv.removeChild(haListTbl);
