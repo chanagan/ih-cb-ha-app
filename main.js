@@ -252,18 +252,18 @@ ipcMain.on('getHaBalance', (event, record) => {
 })
 
 let tblHdrs = [];
-tblHdrs["accountName"] = { 'align': 'left', 'value': 'Name' };
-tblHdrs["accountStatus"] = { 'align': 'center', 'value': 'Status' };
+tblHdrs["accountName"] = { 'align': 'left', 'value': 'Name', 'width': 35 };
+tblHdrs["accountStatus"] = { 'align': 'center', 'value': 'Status', 'width': '10' };
 tblHdrs["charges"] = { 'align': 'right', 'value': 'Balance' };
 
 let chrgHdrs = [];
-chrgHdrs["balance"] = { 'align': 'right', 'value': 'Charges' };
-chrgHdrs["monMin"] = { 'align': 'right', 'value': 'Minimum' };
-chrgHdrs["minDelta"] = { 'align': 'right', 'value': 'Delta' };
-chrgHdrs["minTax"] = { 'align': 'right', 'value': '7.5%' };
-chrgHdrs["subTot"] = { 'align': 'right', 'value': 'Sub Total' };
-chrgHdrs["creChg"] = { 'align': 'right', 'value': '3.0%' };
-chrgHdrs["totChg"] = { 'align': 'right', 'value': 'Total Charge' };
+chrgHdrs["balance"] = { 'align': 'right', 'value': 'Charges', 'width': '10' };
+chrgHdrs["monMin"] = { 'align': 'right', 'value': 'Minimum', 'width': '15' };
+chrgHdrs["minDelta"] = { 'align': 'right', 'value': 'Delta', 'width': '10' };
+chrgHdrs["minTax"] = { 'align': 'right', 'value': '7.5%', 'width': '10' };
+chrgHdrs["subTot"] = { 'align': 'right', 'value': 'Sub Total', 'width': '15' };
+chrgHdrs["creChg"] = { 'align': 'right', 'value': '3.0%', 'width': '10' };
+chrgHdrs["totChg"] = { 'align': 'right', 'value': 'Total Charge', 'width': '20' };
 
 ipcMain.on('exportHaList', (event, data) => {
     console.log('ipcMain main: getHaList: ')
@@ -283,23 +283,69 @@ ipcMain.on('exportHaList', (event, data) => {
     const sheet = workbook.addWorksheet('First Sheet', { properties: { tabColor: { argb: 'FFC0000' } } });
     // getHA_List(window);
 
+    /**
+     * first, the header row
+     */
     let row = sheet.getRow(1);
-
+    row.font = {
+        name: 'Arial Black'
+    };
     // row.getCell(1).value = 5; // A5's value set to 5
     let colIdx = 1;
     for (let key in tblHdrs) {
         switch (key) {
             case 'charges':
                 for (let key in chrgHdrs) {
+                    let col = sheet.getColumn(colIdx);
+                    col.width = chrgHdrs[key].width;
                     row.getCell(colIdx).value = chrgHdrs[key].value;
+                    // row.getCell(colIdx).width = chrgHdrs[key].width;
                     colIdx++;
                 }
                 break;
             default:
+                let col = sheet.getColumn(colIdx);
+                col.width = tblHdrs[key].width;
                 row.getCell(colIdx).value = tblHdrs[key].value;
+                // row.getCell(colIdx).width = tblHdrs[key].width;
                 colIdx++;
+                break
         }
     }
+
+    /**
+     * now the actual data
+     */
+    let rowCnt = data.length;
+    let colCnt = 1;
+    for (let i = 0; i < rowCnt; i++) {
+        let record = data[i];
+        row = sheet.getRow(i + 2);
+        colIdx = 1;
+        for (let key in tblHdrs) {
+            switch (key) {
+                case 'charges':
+                    let actChrgs = record.charges;
+                    if (typeof (actChrgs) === 'undefined') {
+                        continue
+                    }
+                    for (let chrgKey in chrgHdrs) {
+                        row.getCell(colIdx).value = actChrgs[chrgKey];
+                        row.getCell(colIdx).width = chrgHdrs[chrgKey].width;
+                        row.getCell(colIdx).numFmt = '#,##0.00';
+                        colIdx++;
+                    }
+                    break;
+                default:
+                    row.getCell(colIdx).value = record[key];
+                    row.getCell(colIdx).width = tblHdrs[key].width;
+                    colIdx++;
+                    break
+            }
+        }
+    }
+
+
 
     workbook.xlsx.writeFile("data.xlsx")
         .then(function () {

@@ -49,31 +49,31 @@ const sheet = workbook.addWorksheet('First Sheet', { properties: { tabColor: { a
 //     }
 // }
 
-// let rowCnt = data.length;
-// let colCnt = 1;
-// for (let i = 0; i < rowCnt; i++) {
-//     let record = data[i];
-//     row = sheet.getRow(i + 2);
-//     colIdx = 1;
-//     for (let key in tblHdrs) {
-//         switch (key) {
-//             // case 'charges':
-//             //     let actChrgs = record.charges;
-//             //     // if (typeof (actChrgs) === 'undefined') {
-//             //     //     continue
-//             //     // }
+let rowCnt = data.length;
+let colCnt = 1;
+for (let i = 0; i < rowCnt; i++) {
+    let record = data[i];
+    row = sheet.getRow(i + 2);
+    colIdx = 1;
+    for (let key in tblHdrs) {
+        switch (key) {
+            case 'charges':
+                let actChrgs = record.charges;
+                if (typeof (actChrgs) === 'undefined') {
+                    continue
+                }
 
-//             //     // for (let chrgKey in chrgHdrs) {
-//             //     //     row.getCell(colIdx).value = actChrgs[chrgKey];
-//             //     //     colIdx++;
-//             //     // }
-//             //     break;
-//             default:
-//                 row.getCell(colIdx).value = record[key];
-//                 colIdx++;
-//         }
-//     }
-// }
+                for (let chrgKey in chrgHdrs) {
+                    row.getCell(colIdx).value = actChrgs[chrgKey];
+                    colIdx++;
+                }
+                break;
+            default:
+                row.getCell(colIdx).value = record[key];
+                colIdx++;
+        }
+    }
+}
 
 workbook.xlsx.writeFile("data.xlsx").then(function () {
     console.log("xls file is written.");

@@ -1,4 +1,5 @@
 config.json
+data.xlsx
 # database
 db
 .DS_Store
