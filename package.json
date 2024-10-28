@@ -20,7 +20,7 @@
   "dependencies": {
     "bootstrap": "^5.3.3",
     "bootstrap-icons": "^1.11.3",
-    "electron-fetch": "^1.9.1"
+    "electron-fetch": "^1.9.1",
+    "exceljs": "^4.4.0"
   }
 }
-

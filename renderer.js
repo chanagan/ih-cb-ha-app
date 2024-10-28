@@ -35,13 +35,14 @@ btnHaNmSearch.addEventListener("click", () => {
 })
 btnHaListPrint.addEventListener("click", () => {
   // haListDiv.removeChild(haListTbl);
-  alert("Print");
+  // alert("Print");
   let win = window.open('about:blank', '_blank', 'top=500,left=200,frame=false,nodeIntegration=no')
   let winBod   = win.document.body
   console.log(win)  
+  api.send('exportHaList', showAccounts )
   winBod.innerHTML = haListTbl.outerHTML
   win.focus();
-  win.print();
+  // win.print();
   setTimeout(() => { win.close(); }, 1000);
 })
 chkStatOpn.addEventListener("click", () => {
