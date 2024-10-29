@@ -258,12 +258,12 @@ tblHdrs["charges"] = { 'align': 'right', 'value': 'Balance' };
 
 let chrgHdrs = [];
 chrgHdrs["balance"] = { 'align': 'right', 'value': 'Charges', 'width': '10' };
-chrgHdrs["monMin"] = { 'align': 'right', 'value': 'Minimum', 'width': '15' };
+chrgHdrs["monMin"] = { 'align': 'right', 'value': 'Minimum', 'width': '10' };
 chrgHdrs["minDelta"] = { 'align': 'right', 'value': 'Delta', 'width': '10' };
 chrgHdrs["minTax"] = { 'align': 'right', 'value': '7.5%', 'width': '10' };
-chrgHdrs["subTot"] = { 'align': 'right', 'value': 'Sub Total', 'width': '15' };
+chrgHdrs["subTot"] = { 'align': 'right', 'value': 'Sub Total', 'width': '12' };
 chrgHdrs["creChg"] = { 'align': 'right', 'value': '3.0%', 'width': '10' };
-chrgHdrs["totChg"] = { 'align': 'right', 'value': 'Total Charge', 'width': '20' };
+chrgHdrs["totChg"] = { 'align': 'right', 'value': 'Total Charge', 'width': '15' };
 
 ipcMain.on('exportHaList', (event, data) => {
     console.log('ipcMain main: getHaList: ')
@@ -280,7 +280,25 @@ ipcMain.on('exportHaList', (event, data) => {
             firstSheet: 0, activeTab: 1, visibility: 'visible'
         }
     ]
-    const sheet = workbook.addWorksheet('First Sheet', { properties: { tabColor: { argb: 'FFC0000' } } });
+    const sheet = workbook.addWorksheet('House Accounts', {
+        properties:
+        {
+            tabColor: { argb: '00a7ce0' }
+        },
+        pageSetup: {
+            orientation: 'landscape',
+            fitToPage: true,
+            fitToWidth: 1,
+            fitToHeight: 25
+        },
+        views: {
+            state: 'frozen',
+            activeCell: 'A1',
+            ySplit: 1
+        }
+    }
+    );
+    // sheet.pageSetup.orientation = 'landscape';
     // getHA_List(window);
 
     /**
@@ -297,8 +315,10 @@ ipcMain.on('exportHaList', (event, data) => {
             case 'charges':
                 for (let key in chrgHdrs) {
                     let col = sheet.getColumn(colIdx);
+                    let cell = row.getCell(colIdx);
                     col.width = chrgHdrs[key].width;
-                    row.getCell(colIdx).value = chrgHdrs[key].value;
+                    cell.value = chrgHdrs[key].value;
+                    cell.alignment = { horizontal: chrgHdrs[key].align, vertical: 'top' };
                     // row.getCell(colIdx).width = chrgHdrs[key].width;
                     colIdx++;
                 }

@@ -211,10 +211,10 @@ window.addEventListener("message", (event) => {
 
     let rowCnt = haAccounts.length;
     rowCnt = 10
-    let intMilSec = 250;
-    let anInterval = 1000 / intMilSec;
-    let rowsPerInterval = rowCnt / anInterval
-    let rowInterv = 100 / rowsPerInterval;
+    // let intMilSec = 250;
+    // let anInterval = 1000 / intMilSec;
+    // let rowsPerInterval = rowCnt / anInterval
+    // let rowInterv = 100 / rowsPerInterval;
 
     let nIntervalId;
 
