@@ -5,6 +5,9 @@ const ExcelJS = require('exceljs');
 const { getHA_List, computeCharges, log } = require("./js/haMainFuncs");
 
 const path = require("path");
+const appData = app.getPath("userData");
+console.log("main: appData: ", appData);
+
 // // const sqlite3 = require("sqlite3").verbose();
 // // const db = new sqlite3.Database("./db/rm-test.db");
 // const findGst = require("./sql/sql.js");
@@ -239,14 +242,14 @@ ipcMain.on('getHaBalance', (event, record) => {
             // record.balance = balance
             let charges = computeCharges(record.accountName, haData)
             record.charges = charges
-            console.log(`credit: ${credit} - debit: ${debit} = balance: ${balance}`) // console.log('credit: ', credit) 
+            // console.log(`credit: ${credit} - debit: ${debit} = balance: ${balance}`) // console.log('credit: ', credit) 
             // return resData
             window.webContents.send("gotHaBalance", record);
         })
         .catch(err => {
-            console.log(`main: getHaBalance: ${record} error: ${err}`) // console.log(err)
+            // console.log(`main: getHaBalance: ${record} error: ${err}`) // console.log(err)
             window.webContents.send("gotHaBalance", record);
-            console.error(err)
+            // console.error(err)
         })
         ;
 })
@@ -367,7 +370,9 @@ ipcMain.on('exportHaList', (event, data) => {
         }
     }
 
-    workbook.xlsx.writeFile("data.xlsx")
+    // preload: path.join(__dirname, "preload.js"),
+    let workbookFile = path.join(appData, "ih-ha.xlsx");
+    workbook.xlsx.writeFile(workbookFile)
         .then(function () {
             console.log("xls file is written.");
         });
