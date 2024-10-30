@@ -299,8 +299,35 @@ ipcMain.on('exportHaList', (event, data) => {
         }
     }
     );
-    // sheet.pageSetup.orientation = 'landscape';
-    // getHA_List(window);
+
+    sheet.addTable({
+        name: "House Accounts",
+        ref: 'A1',
+        headerRow: true,
+        totalsRow: false,
+        // style: {
+        //   theme: 'TableStyleDark3',
+        //   showRowStripes: true,
+        // },
+        columns: [
+            { name: 'A' },
+            { name: 'B' },
+            { name: 'C' },
+            { name: 'D' },
+            { name: 'E' },
+            { name: 'F' },
+            { name: 'G' },
+            { name: 'H' },
+            { name: 'I' },
+        ],
+        rows: [
+            ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I'],
+        ]
+    });
+
+    const table = sheet.getTable('House Accounts');
+
+
 
     /**
      * first, the header row
@@ -310,34 +337,59 @@ ipcMain.on('exportHaList', (event, data) => {
         name: 'Arial Black'
     };
     // row.getCell(1).value = 5; // A5's value set to 5
-    let colIdx = 1;
+    let colIdx = 0;
     for (let key in tblHdrs) {
         switch (key) {
             case 'charges':
                 for (let key in chrgHdrs) {
-                    let col = sheet.getColumn(colIdx);
+                    // table.addColumn({ name: chrgHdrs[key].value });
+                    let col = table.getColumn(colIdx);
+                    col.name = chrgHdrs[key].value;
+                    col.style = {
+                        alignment: { horizontal: chrgHdrs[key].align, vertical: 'top' },
+                        font: {
+                            name: 'Arial Black'
+                        }
+                    }
+/*                    let col = sheet.getColumn(colIdx);
                     let cell = row.getCell(colIdx);
                     col.width = chrgHdrs[key].width;
                     cell.value = chrgHdrs[key].value;
                     cell.alignment = { horizontal: chrgHdrs[key].align, vertical: 'top' };
+*/
                     // row.getCell(colIdx).width = chrgHdrs[key].width;
                     colIdx++;
                 }
                 break;
             default:
+                // table.addColumn({ name: tblHdrs[key].value });
+                let col = table.getColumn(colIdx);
+                col.name = tblHdrs[key].value;
+                col.style = {
+                    alignment: { horizontal: tblHdrs[key].align, vertical: 'top' },
+                    font: {
+                        name: 'Arial Black'
+                    }
+                }
+/*                
                 let col = sheet.getColumn(colIdx);
                 col.width = tblHdrs[key].width;
                 row.getCell(colIdx).value = tblHdrs[key].value;
+*/                
                 // row.getCell(colIdx).width = tblHdrs[key].width;
                 colIdx++;
                 break
         }
     }
-    row.commit();
+
+    table.commit();
+    sheet.commit();
+    workbook.commit();
 
     /**
      * now the actual data
      */
+/*    
     let rowCnt = data.length;
     let colCnt = 1;
     for (let i = 0; i < rowCnt; i++) {
@@ -366,6 +418,8 @@ ipcMain.on('exportHaList', (event, data) => {
             }
         }
     }
+*/
+
 
     workbook.xlsx.writeFile("data.xlsx")
         .then(function () {

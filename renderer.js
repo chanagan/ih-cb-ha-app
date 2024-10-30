@@ -210,7 +210,7 @@ window.addEventListener("message", (event) => {
     // get the balance info for the records first
 
     let rowCnt = haAccounts.length;
-    rowCnt = 10
+    rowCnt = 100
     // let intMilSec = 250;
     // let anInterval = 1000 / intMilSec;
     // let rowsPerInterval = rowCnt / anInterval
