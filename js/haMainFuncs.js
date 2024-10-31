@@ -1,5 +1,10 @@
 // const fs = require('fs');
-const cbConfig = require('../config.json');
+const {app} = require("electron");
+const path = require("path");
+const appData = app.getPath("userData");
+let configFile = path.join(appData, "ih-ap-config.json");
+const cbConfig = require(configFile);
+// const cbConfig = require('../config.json');
 // const cbConfig = JSON.parse(fs.readFileSync("../config.json", 'utf-8'));
 
 const cbPropertyID = cbConfig.cbPropertyID;
@@ -12,15 +17,28 @@ const cbApiGetReservations = "getReservations?";
 const cbApiGetReservation = "getReservation?";
 
 const computeCharges = (accountName, haData) => {
+    const flTax = 0.075
+    const ccFee = 0.03
     let credit = haData.total.credit.slice(4).replaceAll(',', '')
     let debit = haData.total.debit.slice(4).replaceAll(',', '')
     let balance = credit - debit
-    let monMin = accountName.includes("&") ? 200 : 100
-    let minDelta = balance < monMin ? monMin - balance : 0
-    let minTax = minDelta * 0.075
-    let subTot = balance + minDelta + minTax
-    let creChg = subTot * 0.03
-    let totChg = subTot + creChg
+    let monMin = ''
+    let minDelta = ''
+    let minTax = ''
+    let subTot = ''
+    let creChg = ''
+    let totChg = ''
+
+    if (balance >= 0) {
+        monMin = accountName.includes("&") ? 200 : 100
+        minDelta = balance < monMin ? monMin - balance : 0
+        minTax = minDelta * flTax
+        subTot = balance + minDelta + minTax
+        creChg = subTot * ccFee
+        totChg = subTot + creChg
+    }
+
+
     return {
         balance: balance,
         monMin: monMin,

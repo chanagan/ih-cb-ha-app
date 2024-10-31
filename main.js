@@ -19,7 +19,8 @@ console.log("main: appData: ", appData);
 let ha_accts;  // this is the global variable for the house accounts
 let resWindow, resData, haData;
 
-const cbConfig = require('./config.json');
+let configFile = path.join(appData, "ih-ap-config.json");
+const cbConfig = require(configFile);
 // console.log("main: cbConfig: ", cbConfig);
 
 const winWidth = cbConfig.winWidth;
@@ -71,14 +72,14 @@ const createWindow = () => {
     window.loadFile("index.html");
     // console.log('in main.js: ', window)
 
-    window.webContents.openDevTools({
-        mode: "detach",
-        width: winWidth,
-        height: winHeight,
-        x: winWidth,
-        y: 100,
-        show: openDevTools,
-    });
+    // window.webContents.openDevTools({
+    //     mode: "detach",
+    //     width: winWidth,
+    //     height: winHeight,
+    //     x: winWidth,
+    //     y: 100,
+    //     show: openDevTools,
+    // });
 };
 
 app.whenReady().then(() => {
