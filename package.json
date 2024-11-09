@@ -1,12 +1,12 @@
 {
   "name": "ih-cb-ih-app",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "IH app for CB - House Accounts",
   "main": "main.js",
   "scripts": {
     "start": "electron .",
     "dev": "nodemon --exec electron .",
-    "dist": "electron-builder -mw -p never",
+    "dist": "electron-builder -w -p always ",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
@@ -20,7 +20,7 @@
   "dependencies": {
     "bootstrap": "^5.3.3",
     "bootstrap-icons": "^1.11.3",
-    "electron-fetch": "^1.9.1"
+    "electron-fetch": "^1.9.1",
+    "exceljs": "^4.4.0"
   }
 }
-

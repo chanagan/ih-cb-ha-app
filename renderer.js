@@ -12,6 +12,7 @@ import { haClearDetails, showHaList, showVipList, clearInfoBlocks, clearHighligh
   from "./js/utility.js";
 // import { ipcRenderer } from "electron";
 
+
 /**
  * Initialise the UI
  */
@@ -31,6 +32,18 @@ navVIP.addEventListener("click", showVipList);
 btnHaNmSearch.addEventListener("click", () => {
   // haListDiv.removeChild(haListTbl);
   dispHaList(showAccounts);
+})
+btnHaListPrint.addEventListener("click", () => {
+  // haListDiv.removeChild(haListTbl);
+  // alert("Print");
+  let win = window.open('about:blank', '_blank', 'top=500,left=200,frame=false,nodeIntegration=no')
+  let winBod   = win.document.body
+  console.log(win)  
+  api.send('exportHaList', showAccounts )
+  winBod.innerHTML = haListTbl.outerHTML
+  win.focus();
+  // win.print();
+  setTimeout(() => { win.close(); }, 1000);
 })
 chkStatOpn.addEventListener("click", () => {
   // haListDiv.removeChild(haListTbl);
@@ -197,11 +210,11 @@ window.addEventListener("message", (event) => {
     // get the balance info for the records first
 
     let rowCnt = haAccounts.length;
-    rowCnt = 10
-    let intMilSec = 250;
-    let anInterval = 1000 / intMilSec;
-    let rowsPerInterval = rowCnt / anInterval
-    let rowInterv = 100 / rowsPerInterval;
+    // rowCnt = 15
+    // let intMilSec = 250;
+    // let anInterval = 1000 / intMilSec;
+    // let rowsPerInterval = rowCnt / anInterval
+    // let rowInterv = 100 / rowsPerInterval;
 
     let nIntervalId;
 

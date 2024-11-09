@@ -1,4 +1,6 @@
-config.json
+ih-ap-config.json
+*.xlsx
+*.pdf
 # database
 db
 .DS_Store
