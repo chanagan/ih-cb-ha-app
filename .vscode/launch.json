@@ -1,19 +1,32 @@
 {
     "version": "0.2.0",
+    "compounds": [
+      {
+        "name": "Main + renderer",
+        "configurations": ["Main", "Renderer"],
+        "stopAll": true
+      }
+    ],
     "configurations": [
-        {
-            "type": "chrome",
-            "request": "launch",
-            "name": "Launch Chrome against localhost",
-            "url": "http://localhost:8080",
-            "webRoot": "${workspaceFolder}"
+      {
+        "name": "Renderer",
+        "port": 9222,
+        "request": "attach",
+        "type": "chrome",
+        "webRoot": "${workspaceFolder}"
+      },
+      {
+        "name": "Main",
+        "type": "node",
+        "request": "launch",
+        "cwd": "${workspaceFolder}",
+        "runtimeExecutable": "${workspaceFolder}/node_modules/.bin/electron",
+        "windows": {
+          "runtimeExecutable": "${workspaceFolder}/node_modules/.bin/electron.cmd"
         },
-        {
-            "type": "node-terminal",
-            "name": "Run Script: dev",
-            "request": "launch",
-            "command": "npm run dev",
-            "cwd": "${workspaceFolder}"
-        }
+        "args": [".", "--remote-debugging-port=9222"],
+        "outputCapture": "std",
+        "console": "integratedTerminal"
+      }
     ]
-}
+  }

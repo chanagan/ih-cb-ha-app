@@ -148,46 +148,58 @@ window.addEventListener("message", (event) => {
     console.log(`renderer: vipGuests ${rowCnt} : ${rowsPerInterval}`)
     let nIntervalId;
 
-    let progBar = document.createElement('div');
+    // let progBar = document.createElement('div');
+    let progBar = document.createElement('progress');
     resListDiv.appendChild(progBar)
+    let progCnt = document.createElement('span');
+    haProgDiv.appendChild(progCnt);
 
-    progBar.className = 'progress';
-    progBar.role = 'progressbar';
-    progBar.ariaLabel = 'Basic example';
-    progBar.ariaValuenow = '75';
-    progBar.ariaValuemin = '0';
-    progBar.ariaValuemax = '100';
+    // progBar.className = 'progress';
+    // progBar.role = 'progressbar';
+    // progBar.ariaLabel = 'Basic example';
+    // progBar.ariaValuenow = '75';
+    // progBar.ariaValuemin = '0';
+    // progBar.ariaValuemax = '100';
 
     // <div class="progress" role="progressbar" aria-label="Basic example" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100">
-    let progBarInner = document.createElement('div');
-    progBar.appendChild(progBarInner);
-    progBarInner.className = 'progress-bar progress-bar-striped progress-bar-animated';
-    progBarInner.style.width = '0%';
+    // let progBarInner = document.createElement('div');
+    // progBar.appendChild(progBarInner);
+    // progBarInner.className = 'progress-bar progress-bar-striped progress-bar-animated';
+    // progBarInner.style.width = '0%';
     // </div>
+
+    progBar.id = 'progBar';
+    progBar.max = '100';
+    progBar.value = '0';
 
     let rowProgress = 0;
 
-    for (let i = 0; i < rowCnt; i++) {
-      if (!nIntervalId)
+    // for (let i = 0; i < rowCnt; i++) {
+      if (!nIntervalId) {
+        let i = 0
         nIntervalId = setInterval(function () {
           if (i < rowCnt) {
-            if (i > rowProgress) {
-              rowProgress += rowInterv
-              progBarInner.style.width = `${rowProgress}%`;
-            }
+            // if (i > rowProgress) {
+            //   rowProgress += rowInterv
+            //   progBarInner.style.width = `${rowProgress}%`;
+            // }
             // let keyID = vipGuests[i].reservationID;
             // showRecords.push(vipGuests[i]);
             // api.send("getResDetail", showRecords[i])
             api.send("getResDetail", vipGuests[i])
             i++
+            progBar.value = i * 100 / rowCnt
+            progCnt.innerHTML = ` ${i} of ${rowCnt}`
           } else {
+            progCnt.remove();
             progBar.remove();
-            console.log('end of vipGuests: ', showRecords);
+              console.log('end of vipGuests: ', showRecords);
             clearInterval(nIntervalId);
             dispVipList(showRecords);
           }
         }, 250);
-    }
+      }
+    // }
     console.log('render: resData: end');
   }
 
@@ -210,7 +222,7 @@ window.addEventListener("message", (event) => {
     // get the balance info for the records first
 
     let rowCnt = haAccounts.length;
-    // rowCnt = 15
+    rowCnt = 5
     // let intMilSec = 250;
     // let anInterval = 1000 / intMilSec;
     // let rowsPerInterval = rowCnt / anInterval
