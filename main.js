@@ -210,7 +210,7 @@ ipcMain.on('getHaDetail', (event, keyID) => {
         propertyID: cbPropertyID,
         houseAccountID: keyID,
         resultsFrom: '2024-07-08',
-        resultsTo: '2024-12-31',
+        resultsTo: '2025-12-31',
     })
     fetch(cbServer + cbApiHA_Details + params, cbOptions)
         .then(res => res.json())
@@ -229,7 +229,7 @@ ipcMain.on('getHaBalance', (event, record) => {
         propertyID: cbPropertyID,
         houseAccountID: keyID,
         resultsFrom: '2024-07-08',
-        resultsTo: '2024-12-31',
+        resultsTo: '2025-12-31',
     })
     fetch(cbServer + cbApiHA_Details + params, cbOptions)
         .then(res => res.json())
